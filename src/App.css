@@ -4643,7 +4643,18 @@ textarea.form-input,
 .calc-right-col {
   display: flex;
   flex-direction: column;
+  gap: var(--space-5);
+  align-self: stretch; /* boxes grow to the keypad column's height */
   min-width: 0;
+}
+
+/* Two boxes side by side — For Whom? and Paid By; they stack when narrow. */
+.calc-boxes-row {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-5);
+  align-items: stretch;
 }
 
 .for-whom-card {
@@ -4662,6 +4673,7 @@ textarea.form-input,
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+  min-height: 36px; /* keeps both box titles level whether or not there's a button */
 }
 
 .for-whom-title {
@@ -5746,15 +5758,9 @@ textarea.form-input,
 
 .item-split-meta-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 260px);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   margin-top: var(--space-4);
-}
-
-@media (max-width: 640px) {
-  .item-split-meta-row {
-    grid-template-columns: 1fr;
-  }
 }
 
 @keyframes appToastIn {

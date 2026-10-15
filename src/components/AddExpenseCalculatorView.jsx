@@ -16,6 +16,7 @@ export const AddExpenseCalculatorView = ({
   groupId,
   onChangeGroup,
   onBack,
+  initialPaidBy = null,
   onContinue,
   onCancel,
 }) => {
@@ -30,6 +31,12 @@ export const AddExpenseCalculatorView = ({
   const groupMembers = data?.members ?? [];
   const [deselected, setDeselected] = useState(() => new Set());
   const members = groupMembers.map((m) => ({ ...m, selected: !deselected.has(m.id) }));
+
+  // "Paid By": one member. Defaults to the current user (or whoever paid last time
+  // on this draft); falls back safely if the chosen id isn't in this group.
+  const [paidById, setPaidById] = useState(initialPaidBy);
+  const me = groupMembers.find((m) => m.isCurrentUser);
+  const paidBy = groupMembers.find((m) => m.id === paidById)?.id ?? me?.id ?? groupMembers[0]?.id ?? null;
 
   // Inline "add a friend" form (creates a guest member in the group)
   const [isAddingPerson, setIsAddingPerson] = useState(false);
@@ -188,6 +195,7 @@ export const AddExpenseCalculatorView = ({
     return onContinue(
       { name: itemName.trim() || 'Expense', price: parsedAmount, memberIds: selectedList.map((m) => m.id) },
       groupMembers,
+      paidBy,
     );
   };
 
@@ -291,96 +299,136 @@ export const AddExpenseCalculatorView = ({
             </div>
           </div>
 
-          {/* Right Column: For Whom? Card */}
+          {/* Right Column: group picker, then two boxes — For Whom? and Paid By */}
           <div className="calc-right-col">
-            <div className="for-whom-card">
-              {groups.length > 1 && (
-                <div className="custom-select-wrapper">
-                  <select
-                    className="form-select custom-select-input"
-                    value={groupId}
-                    onChange={(e) => onChangeGroup(e.target.value)}
-                    aria-label="Group"
-                  >
-                    {groups.map((g) => (
-                      <option key={g.id} value={g.id}>
-                        {g.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="custom-select-arrow" aria-hidden="true">
-                    <ChevronDown size={18} strokeWidth={2.2} />
-                  </div>
-                </div>
-              )}
-              <div className="for-whom-header">
-                <h3 className="for-whom-title">For Whom?</h3>
-                <button 
-                  type="button" 
-                  className="btn btn-ghost btn-sm" 
-                  onClick={handleSelectAll}
-                  id="btn-select-all-members"
+            {groups.length > 1 && (
+              <div className="custom-select-wrapper">
+                <select
+                  className="form-select custom-select-input"
+                  value={groupId}
+                  onChange={(e) => onChangeGroup(e.target.value)}
+                  aria-label="Group"
                 >
-                  {members.every(m => m.selected) ? 'Deselect All' : 'Select All'}
-                </button>
+                  {groups.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="custom-select-arrow" aria-hidden="true">
+                  <ChevronDown size={18} strokeWidth={2.2} />
+                </div>
               </div>
+            )}
 
-              {/* Avatars Row */}
-              <div className="for-whom-avatars-row">
-                {members.map((mem) => (
-                  <div 
-                    key={mem.id} 
-                    className={`for-whom-avatar-item ${mem.selected ? 'selected' : 'unselected'}`}
-                    onClick={() => toggleMember(mem.id)}
-                    role="checkbox"
-                    aria-checked={mem.selected}
-                    tabIndex={0}
-                    id={`avatar-item-${mem.id}`}
+            <div className="calc-boxes-row">
+              {/* Box 1 — For Whom? */}
+              <div className="for-whom-card" id="box-for-whom">
+                <div className="for-whom-header">
+                  <h3 className="for-whom-title">For Whom?</h3>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    onClick={handleSelectAll}
+                    id="btn-select-all-members"
                   >
-                    <div className="avatar-circle-wrapper">
-                      <Avatar person={mem} className="avatar-face-img" />
-                      {mem.selected && (
-                        <div className="avatar-active-ring" />
-                      )}
+                    {members.every(m => m.selected) ? 'Deselect All' : 'Select All'}
+                  </button>
+                </div>
+
+                {/* Avatars Row */}
+                <div className="for-whom-avatars-row">
+                  {members.map((mem) => (
+                    <div
+                      key={mem.id}
+                      className={`for-whom-avatar-item ${mem.selected ? 'selected' : 'unselected'}`}
+                      onClick={() => toggleMember(mem.id)}
+                      role="checkbox"
+                      aria-checked={mem.selected}
+                      tabIndex={0}
+                      id={`avatar-item-${mem.id}`}
+                    >
+                      <div className="avatar-circle-wrapper">
+                        <Avatar person={mem} className="avatar-face-img" />
+                        {mem.selected && (
+                          <div className="avatar-active-ring" />
+                        )}
+                      </div>
+                      <span className="avatar-person-label">{mem.isCurrentUser ? 'You' : mem.name}</span>
                     </div>
-                    <span className="avatar-person-label">{mem.isCurrentUser ? 'You' : mem.name}</span>
-                  </div>
-                ))}
+                  ))}
 
-                {/* + Add New Person Button */}
-                <div 
-                  className="for-whom-avatar-item add-new"
-                  onClick={() => setIsAddingPerson(true)}
-                  role="button"
-                  tabIndex={0}
-                  id="btn-add-for-whom-person"
-                >
-                  <div className="avatar-add-circle">
-                    <Plus size={20} strokeWidth={2.4} />
+                  {/* + Add New Person Button */}
+                  <div
+                    className="for-whom-avatar-item add-new"
+                    onClick={() => setIsAddingPerson(true)}
+                    role="button"
+                    tabIndex={0}
+                    id="btn-add-for-whom-person"
+                  >
+                    <div className="avatar-add-circle">
+                      <Plus size={20} strokeWidth={2.4} />
+                    </div>
+                    <span className="avatar-person-label">Add</span>
                   </div>
-                  <span className="avatar-person-label">Add</span>
                 </div>
+
+                {/* Inline Add Person Form */}
+                {isAddingPerson && (
+                  <form onSubmit={handleAddNewMember} className="inline-add-person-form animate-fade-in">
+                    <input
+                      type="text"
+                      placeholder="Friend's name..."
+                      value={newPersonName}
+                      onChange={(e) => setNewPersonName(e.target.value)}
+                      className="inline-person-input"
+                      autoFocus
+                    />
+                    <div className="inline-form-actions">
+                      <button type="submit" className="btn btn-primary btn-sm" disabled={isSavingPerson}>
+                        {isSavingPerson ? 'Adding…' : 'Add'}
+                      </button>
+                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIsAddingPerson(false)}>Cancel</button>
+                    </div>
+                  </form>
+                )}
               </div>
 
-              {/* Inline Add Person Form */}
-              {isAddingPerson && (
-                <form onSubmit={handleAddNewMember} className="inline-add-person-form animate-fade-in">
-                  <input
-                    type="text"
-                    placeholder="Friend's name..."
-                    value={newPersonName}
-                    onChange={(e) => setNewPersonName(e.target.value)}
-                    className="inline-person-input"
-                    autoFocus
-                  />
-                  <div className="inline-form-actions">
-                    <button type="submit" className="btn btn-primary btn-sm" disabled={isSavingPerson}>
-                      {isSavingPerson ? 'Adding…' : 'Add'}
-                    </button>
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIsAddingPerson(false)}>Cancel</button>
-                  </div>
-                </form>
-              )}
+              {/* Box 2 — Paid By (pick one) */}
+              <div className="for-whom-card paid-by-card" id="box-paid-by">
+                <div className="for-whom-header">
+                  <h3 className="for-whom-title">Paid By</h3>
+                </div>
+
+                <div className="for-whom-avatars-row" role="radiogroup" aria-label="Paid by">
+                  {groupMembers.map((mem) => {
+                    const isPayer = mem.id === paidBy;
+                    return (
+                      <div
+                        key={mem.id}
+                        className={`for-whom-avatar-item ${isPayer ? 'selected' : 'unselected'}`}
+                        onClick={() => setPaidById(mem.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setPaidById(mem.id);
+                          }
+                        }}
+                        role="radio"
+                        aria-checked={isPayer}
+                        tabIndex={0}
+                        id={`paid-by-item-${mem.id}`}
+                      >
+                        <div className="avatar-circle-wrapper">
+                          <Avatar person={mem} className="avatar-face-img" />
+                          {isPayer && <div className="avatar-active-ring" />}
+                        </div>
+                        <span className="avatar-person-label">{mem.isCurrentUser ? 'You' : mem.name}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </div>

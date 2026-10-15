@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Plus, Check, CheckCircle2, Utensils, GripVertical, Inbox, X, Users, ChevronDown } from './CustomIcons';
+import { ArrowRight, Plus, Check, CheckCircle2, Utensils, GripVertical, Inbox, X, Users } from './CustomIcons';
 import Avatar from './Avatar';
 import PageHeader from './PageHeader';
 import { expensesApi } from '../lib/api';
@@ -241,7 +241,7 @@ export const ItemizedAmbaganView = ({
             {draft.description || 'New expense'} • Total: {peso(overallTotal)}
           </p>
 
-          {/* Expense name and who paid */}
+          {/* Expense name (who paid is chosen on the Add Expenses step) */}
           <div className="item-split-meta-row">
             <input
               className="form-input"
@@ -251,23 +251,6 @@ export const ItemizedAmbaganView = ({
               maxLength={120}
               aria-label="Expense name"
             />
-            <div className="custom-select-wrapper">
-              <select
-                className="form-select custom-select-input"
-                value={paidBy ?? ''}
-                onChange={(e) => update({ paidBy: e.target.value })}
-                aria-label="Paid by"
-              >
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    Paid by {m.isCurrentUser ? 'you' : m.name}
-                  </option>
-                ))}
-              </select>
-              <div className="custom-select-arrow" aria-hidden="true">
-                <ChevronDown size={18} strokeWidth={2.2} />
-              </div>
-            </div>
           </div>
         </div>
 

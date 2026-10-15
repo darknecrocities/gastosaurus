@@ -239,10 +239,11 @@ function App() {
     go('add-expense-calculator');
   };
 
-  const handleCalculatorContinue = (item, members) => {
+  const handleCalculatorContinue = (item, members, paidBy) => {
     setExpenseDraft((d) => ({
       ...d,
       members,
+      paidBy,
       description: d.description || item.name,
       items: [...d.items, { ...item, id: `item-${Date.now()}` }],
     }));
@@ -414,6 +415,7 @@ function App() {
             <AddExpenseCalculatorView
               groups={expenseDraft.items.length ? [] : groups} // switching groups only before the first item
               groupId={expenseDraft.groupId}
+              initialPaidBy={expenseDraft.paidBy}
               onChangeGroup={(groupId) => startExpense(groupId)}
               onBack={() => {
                 if (expenseDraft.items.length) go('item-split');
