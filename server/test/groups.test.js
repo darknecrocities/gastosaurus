@@ -544,6 +544,46 @@ test('join by link: the share code adds you once; admins can reset it; bad codes
   assert.equal((await h.call('POST', '/invites/join', { token: eli.token, body: { code: 'nope!' } })).status, 400);
 });
 
+test('join by link: an invited guest is claimed, not duplicated (Dane signs up as "Daney")', async () => {
+  const { group, members } = ok(
+    await h.call('POST', '/groups', {
+      token: s.alex.token,
+      body: { name: 'Thesis', members: [{ name: 'Dane', email: 'dane@example.com' }] },
+    }),
+    201,
+  );
+  const dane = members.find((m) => m.name === 'Dane');
+
+  // Dane already has a bill, so we can check his history follows him.
+  ok(
+    await h.call('POST', `/groups/${group.id}/expenses`, {
+      token: s.alex.token,
+      body: {
+        description: 'Printing',
+        splitType: 'equal',
+        totalAmount: 100,
+        paidBy: dane.id,
+        memberIds: members.map((m) => m.id),
+      },
+    }),
+    201,
+  );
+
+  // He signs up with a different display name and opens the SHARE LINK (not the invite).
+  const daney = await h.login('dane@example.com', 'Daney');
+  const joined = ok(await h.call('POST', '/invites/join', { token: daney.token, body: { code: group.inviteCode } }));
+  assert.equal(joined.group.myMemberId, dane.id); // same row as the guest "Dane"
+  assert.equal(joined.group.membersCount, 2); // Alex + Dane/Daney — no extra person
+
+  const detail = ok(await h.call('GET', `/groups/${group.id}`, { token: s.alex.token }));
+  assert.equal(detail.members.length, 2);
+  const claimed = detail.members.find((m) => m.id === dane.id);
+  assert.equal(claimed.isGuest, false);
+  assert.equal(claimed.name, 'Daney'); // shows the new account's name
+  assert.equal(claimed.email, 'dane@example.com');
+  assert.equal(detail.pendingInvites.length, 0);
+});
+
 test('summary breaks monthly spending down by group category', async () => {
   const { summary } = ok(await h.call('GET', '/me/summary?month=2026-10', { token: s.alex.token }));
   const total = summary.spendingByCategory.reduce((a, c) => a + Math.round(c.amount * 100), 0);

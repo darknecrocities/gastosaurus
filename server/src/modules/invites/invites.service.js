@@ -72,29 +72,47 @@ async function lockOwnPendingInvite(db, user, inviteId) {
   return invite;
 }
 
+/**
+ * Put `user` in the group — the one place that decides how a person joins.
+ *   • already active        → nothing to do
+ *   • was here before       → the old row comes back (same history)
+ *   • invite names a guest  → the guest row becomes theirs (keeps its bills and payments)
+ *   • otherwise             → a new member row
+ * Returns true when the group actually gained (or regained) this person.
+ */
+async function addUserToGroup(db, { groupId, user, profile, guestId = null }) {
+  const previous = await groupsRepo.findMemberByUser(groupId, user.id, db);
+  if (previous && !previous.left_at) return false;
+  if (previous) {
+    await groupsRepo.reactivate(previous.id, db); // welcome back: same row, same history
+    return true;
+  }
+
+  const guest = guestId ? await groupsRepo.findMember(groupId, guestId, db) : null;
+  if (guest && !guest.user_id && !guest.left_at) {
+    await groupsRepo.linkGuestToUser(guest.id, user.id, db); // claim the guest spot
+  } else {
+    await groupsRepo.insertMember({ groupId, userId: user.id, displayName: profile.name }, db);
+  }
+  return true;
+}
+
 // POST /api/invites/:id/accept → the group summary
 export async function acceptInvite(user, inviteId) {
   const groupId = await withTransaction(async (db) => {
     const invite = await lockOwnPendingInvite(db, user, inviteId);
     const profile = await profiles.getOrCreate(user);
 
-    const previous = await groupsRepo.findMemberByUser(invite.group_id, user.id, db);
-    if (previous && !previous.left_at) {
-      // Already in the group (e.g. joined through another invite) — nothing to add.
-    } else if (previous) {
-      await groupsRepo.reactivate(previous.id, db); // welcome back: same row, same history
-    } else {
-      const guest = invite.member_id ? await groupsRepo.findMember(invite.group_id, invite.member_id, db) : null;
-      if (guest && !guest.user_id && !guest.left_at) {
-        await groupsRepo.linkGuestToUser(guest.id, user.id, db); // claim the guest spot
-      } else {
-        await groupsRepo.insertMember({ groupId: invite.group_id, userId: user.id, displayName: profile.name }, db);
-      }
-    }
+    const joined = await addUserToGroup(db, {
+      groupId: invite.group_id,
+      user,
+      profile,
+      guestId: invite.member_id,
+    });
 
     await repo.setStatus(invite.id, 'accepted', db);
     await groupsRepo.touchGroup(invite.group_id, db);
-    if (!previous || previous.left_at) await notify.memberJoined(db, { groupId: invite.group_id, userId: user.id });
+    if (joined) await notify.memberJoined(db, { groupId: invite.group_id, userId: user.id });
     return invite.group_id;
   });
 
@@ -104,6 +122,7 @@ export async function acceptInvite(user, inviteId) {
 /**
  * POST /api/invites/join  { code } — join through a share link.
  * Already a member → nothing changes. Left before → your old spot comes back.
+ * If your email was invited to claim a guest spot, you take over that spot.
  */
 export async function joinByCode(user, code) {
   const groupId = await withTransaction(async (db) => {
@@ -111,17 +130,15 @@ export async function joinByCode(user, code) {
     if (!id) throw HttpError.notFound('That invite link is not valid any more. Ask for a new one.');
 
     const profile = await profiles.getOrCreate(user);
-    const previous = await groupsRepo.findMemberByUser(id, user.id, db);
-    if (previous && !previous.left_at) return id; // already in
 
-    if (previous) await groupsRepo.reactivate(previous.id, db);
-    else await groupsRepo.insertMember({ groupId: id, userId: user.id, displayName: profile.name }, db);
+    // An email invite for this person may point at a guest spot ("Dane"). Joining
+    // by link must still claim that spot, not add a second person next to it.
+    const pending = user.email ? await repo.findPending(id, user.email.toLowerCase(), db) : null;
+    const joined = await addUserToGroup(db, { groupId: id, user, profile, guestId: pending?.member_id });
+    if (!joined) return id; // already in
 
-    // An email invite for this person is now redundant.
-    if (user.email) {
-      const pending = await repo.findPending(id, user.email.toLowerCase(), db);
-      if (pending) await repo.setStatus(pending.id, 'accepted', db);
-    }
+    // The email invite is now used up.
+    if (pending) await repo.setStatus(pending.id, 'accepted', db);
     await groupsRepo.touchGroup(id, db);
     await notify.memberJoined(db, { groupId: id, userId: user.id });
     return id;
