@@ -150,7 +150,7 @@ export const LandingFooter = ({ onOpenDownload, onOpenAuth }) => {
         {/* Bottom Bar: Copyright & Back to Top */}
         <div className="footer-bottom-bar">
           <p className="footer-copyright">
-            © 2026 Gastosaurus. Built with pride for barkadas across the Philippines 🇵🇭
+            © 2026 Gastosaurus.
           </p>
 
           <button
