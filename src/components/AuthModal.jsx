@@ -392,7 +392,7 @@ const AuthModalContent = ({ initialMode = 'login', onClose, onAuthSuccess }) => 
               <button
                 type="submit"
                 className="btn btn-primary btn-lg btn-block auth-submit active-press"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isSupabaseConfigured}
               >
                 {isSubmitting ? (
                   <span>{submitLabel[1]}</span>

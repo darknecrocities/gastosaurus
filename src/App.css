@@ -7869,6 +7869,75 @@ textarea.form-input,
   justify-content: center;
 }
 
+.download-modal-footer-dual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.btn-install-app-main {
+  background: linear-gradient(135deg, #FF6B8B 0%, #E2486E 100%);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(226, 72, 110, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-install-app-main:hover {
+  box-shadow: 0 6px 20px rgba(226, 72, 110, 0.45);
+  transform: translateY(-1px);
+}
+
+.desktop-addressbar-cue {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(226, 72, 110, 0.08);
+  border: 1px solid rgba(226, 72, 110, 0.22);
+  margin-top: 10px;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.addressbar-cue-badge {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.addressbar-cue-content strong {
+  display: block;
+  font-size: 13px;
+  color: #B8254E;
+  margin-bottom: 2px;
+}
+
+.addressbar-cue-content p {
+  font-size: 12px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.navbar-install-btn {
+  background: linear-gradient(135deg, rgba(255, 107, 139, 0.15) 0%, rgba(226, 72, 110, 0.2) 100%);
+  border: 1px solid rgba(226, 72, 110, 0.35);
+  box-shadow: 0 2px 10px rgba(226, 72, 110, 0.12);
+}
+
+.navbar-install-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 107, 139, 0.22) 0%, rgba(226, 72, 110, 0.28) 100%);
+  border-color: rgba(226, 72, 110, 0.5);
+  box-shadow: 0 4px 14px rgba(226, 72, 110, 0.22);
+}
+
 /* PWA Automatic Floating Smart Banner */
 .pwa-auto-banner {
   position: fixed;

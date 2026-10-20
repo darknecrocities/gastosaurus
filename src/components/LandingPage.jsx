@@ -141,16 +141,17 @@ export const LandingPage = ({
             <span className="sound-toggle-text">{isAudioActive ? 'Sound ON' : 'Muted'}</span>
           </button>
 
-          {/* Download App Pill Button */}
+          {/* Install App Pill Button */}
           {onOpenDownload && (
             <button
               type="button"
-              className="download-nav-btn liquid-glass-card active-press"
+              className="download-nav-btn navbar-install-btn liquid-glass-card active-press"
               onClick={handleDownloadClick}
-              title="Download & Install Gastosaurus PWA"
+              title="Install Gastosaurus PWA"
+              aria-label="Install Gastosaurus App"
             >
               <Download size={15} />
-              <span>Download App</span>
+              <span>Install App</span>
             </button>
           )}
 

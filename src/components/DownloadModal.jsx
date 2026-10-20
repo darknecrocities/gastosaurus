@@ -14,6 +14,11 @@ export const DownloadModal = ({ isOpen, onClose }) => {
   const { canInstall, isInstalled, isIos, promptInstall } = usePwaInstall();
   const [activePlatform, setActivePlatform] = useState(() => (isIos ? 'ios' : 'android'));
   const [installStatus, setInstallStatus] = useState('');
+  const [showAddressBarCue, setShowAddressBarCue] = useState(false);
+  const [isDesktop] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  });
   const [isInApp] = useState(() => {
     if (typeof window === 'undefined') return false;
     const ua = window.navigator.userAgent || window.navigator.vendor || '';
@@ -24,10 +29,23 @@ export const DownloadModal = ({ isOpen, onClose }) => {
 
   const handleInstallClick = async () => {
     sounds.playClick();
-    const res = await promptInstall();
-    if (res?.accepted) {
-      sounds.playSuccess();
-      setInstallStatus('Installed successfully! Open Gastosaurus from your home screen. 🦖');
+    if (canInstall) {
+      const res = await promptInstall();
+      if (res?.accepted) {
+        sounds.playSuccess();
+        setInstallStatus('Installed successfully! Open Gastosaurus from your home screen or apps. 🦖');
+        return;
+      }
+    }
+    if (isIos) {
+      setActivePlatform('ios');
+      setInstallStatus('Follow the Safari steps below to add Gastosaurus to your home screen! 🦖');
+    } else if (isDesktop) {
+      setShowAddressBarCue(true);
+      setInstallStatus('Look for the Install icon (⭳ or ⊕) in your browser’s address bar above to complete installation.');
+    } else {
+      setActivePlatform('android');
+      setInstallStatus('Tap the menu button (⋮) in Chrome and choose "Install App" or "Add to Home screen".');
     }
   };
 
@@ -70,14 +88,20 @@ export const DownloadModal = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* Direct One-Click Install for Supported Browsers */}
-        {canInstall && !isInstalled && (
+        {/* Direct Install Action Box */}
+        {!isInstalled && (
           <div className="direct-install-box liquid-glass-card active-press">
             <div className="direct-install-content">
               <Sparkles size={20} color="#E2486E" />
               <div>
-                <strong>Direct Install Ready</strong>
-                <p>Your browser supports 1-tap installation directly to your home screen.</p>
+                <strong>{canInstall ? '1-Tap Direct Install' : 'Install Gastosaurus'}</strong>
+                <p>
+                  {canInstall
+                    ? 'Your browser is ready for 1-tap installation directly to your device.'
+                    : isDesktop
+                      ? 'Install Gastosaurus as a native standalone app on your desktop.'
+                      : 'Add Gastosaurus directly to your home screen with zero app store hassle.'}
+                </p>
               </div>
             </div>
             <button
@@ -88,6 +112,17 @@ export const DownloadModal = ({ isOpen, onClose }) => {
               <Download size={16} />
               <span>Install App</span>
             </button>
+          </div>
+        )}
+
+        {/* Desktop Address Bar Helper Cue */}
+        {showAddressBarCue && !isInstalled && (
+          <div className="desktop-addressbar-cue liquid-glass-subtle animate-pop">
+            <div className="addressbar-cue-badge">💡</div>
+            <div className="addressbar-cue-content">
+              <strong>Check your Browser Address Bar</strong>
+              <p>Click the <strong>Install Gastosaurus</strong> icon (⭳ or ⊕) on the right side of the URL bar above to install immediately.</p>
+            </div>
           </div>
         )}
 
@@ -189,7 +224,15 @@ export const DownloadModal = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        <div className="download-modal-footer">
+        <div className="download-modal-footer download-modal-footer-dual">
+          <button
+            type="button"
+            className="btn btn-primary btn-install-app-main active-press"
+            onClick={handleInstallClick}
+          >
+            <Download size={16} />
+            <span>{isInstalled ? 'App Installed 🦖' : 'Install Gastosaurus'}</span>
+          </button>
           <button
             type="button"
             className="btn btn-outline active-press"
