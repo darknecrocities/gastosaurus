@@ -9927,7 +9927,7 @@ textarea.form-input,
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
+  background: #FFFFFF;
   border: 1.5px solid rgba(226, 72, 110, 0.3);
   box-shadow: 0 4px 14px rgba(226, 72, 110, 0.15);
   display: flex;
@@ -9935,6 +9935,8 @@ textarea.form-input,
   justify-content: center;
   overflow: hidden;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .footer-brand-header:hover .footer-mascot-avatar {
@@ -10018,16 +10020,22 @@ textarea.form-input,
   gap: 10px;
 }
 
+.footer-links-group {
+  display: contents;
+}
+
 .footer-link-btn {
   border: none;
   background: transparent;
-  padding: 0;
+  padding: 4px 2px;
   font-size: 13.5px;
   font-weight: 500;
   color: #64748B;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
+  display: inline-block;
+  width: 100%;
 }
 
 .footer-link-btn:hover {
@@ -10122,26 +10130,68 @@ textarea.form-input,
   .footer-brand-col {
     grid-column: span 2;
   }
+  .footer-links-group {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
 }
 
 @media (max-width: 640px) {
-  .footer-top-grid {
-    grid-template-columns: 1fr;
+  .landing-footer {
+    margin-top: 36px;
+    padding-top: 32px;
+    padding-bottom: 24px;
+  }
+
+  .landing-footer-inner {
+    padding: 0 16px;
     gap: 28px;
   }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
   .footer-brand-col {
     grid-column: span 1;
   }
-  .footer-bottom-bar {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+
+  .footer-links-group {
+    grid-column: span 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
+
+  .footer-link-btn {
+    padding: 6px 2px;
+    font-size: 13px;
+  }
+
+  .footer-cta-col {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(226, 72, 110, 0.18);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 4px 16px rgba(226, 72, 110, 0.05);
+  }
+
+  .footer-bottom-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
+  }
+
   .footer-cta-buttons {
     width: 100%;
     flex-direction: column;
   }
+
   .footer-cta-buttons .btn {
     width: 100%;
     justify-content: center;

@@ -67,7 +67,7 @@ export const LandingFooter = ({ onOpenDownload, onOpenAuth }) => {
               tabIndex={0}
               aria-label="Gastosaurus home"
             >
-              <div className="footer-mascot-avatar liquid-glass-subtle">
+              <div className="footer-mascot-avatar">
                 <img src={mascotImg} alt="Gastosaurus logo" className="footer-mascot-img" />
               </div>
               <div className="footer-brand-title-wrap">
@@ -94,24 +94,26 @@ export const LandingFooter = ({ onOpenDownload, onOpenAuth }) => {
           </div>
 
           {/* Navigation Links Columns */}
-          {FOOTER_SECTIONS.map((section) => (
-            <div key={section.title} className="footer-links-col">
-              <h3 className="footer-col-title">{section.title}</h3>
-              <ul className="footer-links-list">
-                {section.links.map((link, idx) => (
-                  <li key={`${section.title}-${idx}`}>
-                    <button
-                      type="button"
-                      className="footer-link-btn"
-                      onClick={() => handleScrollTo(link.id)}
-                    >
-                      {link.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="footer-links-group">
+            {FOOTER_SECTIONS.map((section) => (
+              <div key={section.title} className="footer-links-col">
+                <h3 className="footer-col-title">{section.title}</h3>
+                <ul className="footer-links-list">
+                  {section.links.map((link, idx) => (
+                    <li key={`${section.title}-${idx}`}>
+                      <button
+                        type="button"
+                        className="footer-link-btn"
+                        onClick={() => handleScrollTo(link.id)}
+                      >
+                        {link.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
 
           {/* Actions & PWA Download Column */}
           <div className="footer-cta-col">
