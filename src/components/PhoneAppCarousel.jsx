@@ -11,13 +11,13 @@ import {
   Users,
   Calculator,
   Wallet,
-  Sparkles
+  Sparkles,
+  Copy
 } from './CustomIcons';
 
 // Screen 1: Itemized Ambagan
 const ScreenAmbagan = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Itemized Ambagan</span>
@@ -49,7 +49,6 @@ const ScreenAmbagan = () => (
 // Screen 2: Verified GCash Receipt
 const ScreenReceipt = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Settlement Proof</span>
@@ -59,7 +58,7 @@ const ScreenReceipt = () => (
       <div className="mini-big-amount text-gradient-shimmer">₱450.00</div>
       <p className="mini-subtext">Received by Alex via GCash</p>
       <div className="mini-ref-code">REF #GC-902184-PH</div>
-      <span className="mini-confirmed-tag">Zero Drama Verified ✅</span>
+      <span className="mini-confirmed-tag"><CheckCircle2 size={11} color="#059669" /> Zero Drama Verified</span>
     </div>
   </div>
 );
@@ -67,7 +66,6 @@ const ScreenReceipt = () => (
 // Screen 3: Dino Avatar Selection
 const ScreenDinos = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Choose Persona</span>
@@ -88,7 +86,6 @@ const ScreenDinos = () => (
 // Screen 4: Debt-Chain Minimizer Flow
 const ScreenDebtFlow = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Debt Minimizer</span>
@@ -111,7 +108,6 @@ const ScreenDebtFlow = () => (
 // Screen 5: Quick Split Calculator
 const ScreenCalculator = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Quick Split</span>
@@ -131,7 +127,6 @@ const ScreenCalculator = () => (
 // Screen 6: Boracay Barkada Feed
 const ScreenGroupFeed = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Boracay 2026</span>
@@ -148,7 +143,6 @@ const ScreenGroupFeed = () => (
 // Screen 7: Personal Balance
 const ScreenBalance = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Personal Net</span>
@@ -165,7 +159,6 @@ const ScreenBalance = () => (
 // Screen 8: Group Join Code
 const ScreenInvite = () => (
   <div className="tilted-phone-screen">
-    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
     <div className="mini-app-header">
       <img src={mascotImg} alt="" className="mini-header-logo" />
       <span>Invite Barkada</span>
@@ -174,7 +167,43 @@ const ScreenInvite = () => (
       <div className="mini-badge-pink"><Users size={11} /> Join Code</div>
       <div className="mini-code-box">GASTO-8821</div>
       <p className="mini-subtext">Share link with zero signup friction</p>
-      <div className="mini-ready-btn">Copy Link 🦖</div>
+      <div className="mini-ready-btn"><Copy size={11} /> Copy Link</div>
+    </div>
+  </div>
+);
+
+const IPhoneMockup = ({ children, onClick }) => (
+  <div className="tilted-phone-mockup active-press" onClick={onClick}>
+    <div className="iphone-btn-side iphone-btn-action" />
+    <div className="iphone-btn-side iphone-btn-volup" />
+    <div className="iphone-btn-side iphone-btn-voldn" />
+    <div className="iphone-btn-side iphone-btn-power" />
+    <div className="iphone-inner-screen">
+      <div className="iphone-speaker-slit" />
+      <div className="iphone-status-bar">
+        <span className="iphone-time">9:41</span>
+        <div className="iphone-dynamic-island">
+          <span className="iphone-island-lens" />
+          <span className="iphone-island-sensor" />
+        </div>
+        <div className="iphone-status-icons">
+          <span className="iphone-signal">
+            <span className="sig-bar b1" />
+            <span className="sig-bar b2" />
+            <span className="sig-bar b3" />
+            <span className="sig-bar b4" />
+          </span>
+          <span className="iphone-net">5G</span>
+          <div className="iphone-battery">
+            <div className="iphone-battery-fill" />
+            <div className="iphone-battery-tip" />
+          </div>
+        </div>
+      </div>
+      {children}
+      <div className="iphone-home-indicator-wrapper">
+        <div className="iphone-home-indicator-pill" />
+      </div>
     </div>
   </div>
 );
@@ -208,70 +237,45 @@ export const PhoneAppCarousel = () => {
           {/* Stream Column 1: Upward */}
           <div className="tilted-stream-col col-stream-up">
             {col1.map((ScreenComponent, idx) => (
-              <div
-                key={`col1-${idx}`}
-                className="tilted-phone-mockup active-press"
-                onClick={() => sounds.playPop()}
-              >
-                <div className="phone-island-notch"><span className="notch-camera" /></div>
+              <IPhoneMockup key={`col1-${idx}`} onClick={() => sounds.playPop()}>
                 <ScreenComponent />
-              </div>
+              </IPhoneMockup>
             ))}
           </div>
 
           {/* Stream Column 2: Downward */}
           <div className="tilted-stream-col col-stream-down">
             {col2.map((ScreenComponent, idx) => (
-              <div
-                key={`col2-${idx}`}
-                className="tilted-phone-mockup active-press"
-                onClick={() => sounds.playPop()}
-              >
-                <div className="phone-island-notch"><span className="notch-camera" /></div>
+              <IPhoneMockup key={`col2-${idx}`} onClick={() => sounds.playPop()}>
                 <ScreenComponent />
-              </div>
+              </IPhoneMockup>
             ))}
           </div>
 
           {/* Stream Column 3: Upward */}
           <div className="tilted-stream-col col-stream-up-alt">
             {col3.map((ScreenComponent, idx) => (
-              <div
-                key={`col3-${idx}`}
-                className="tilted-phone-mockup active-press"
-                onClick={() => sounds.playPop()}
-              >
-                <div className="phone-island-notch"><span className="notch-camera" /></div>
+              <IPhoneMockup key={`col3-${idx}`} onClick={() => sounds.playPop()}>
                 <ScreenComponent />
-              </div>
+              </IPhoneMockup>
             ))}
           </div>
 
           {/* Stream Column 4: Downward */}
           <div className="tilted-stream-col col-stream-down-alt">
             {col4.map((ScreenComponent, idx) => (
-              <div
-                key={`col4-${idx}`}
-                className="tilted-phone-mockup active-press"
-                onClick={() => sounds.playPop()}
-              >
-                <div className="phone-island-notch"><span className="notch-camera" /></div>
+              <IPhoneMockup key={`col4-${idx}`} onClick={() => sounds.playPop()}>
                 <ScreenComponent />
-              </div>
+              </IPhoneMockup>
             ))}
           </div>
 
           {/* Stream Column 5: Upward */}
           <div className="tilted-stream-col col-stream-up-alt2">
             {col5.map((ScreenComponent, idx) => (
-              <div
-                key={`col5-${idx}`}
-                className="tilted-phone-mockup active-press"
-                onClick={() => sounds.playPop()}
-              >
-                <div className="phone-island-notch"><span className="notch-camera" /></div>
+              <IPhoneMockup key={`col5-${idx}`} onClick={() => sounds.playPop()}>
                 <ScreenComponent />
-              </div>
+              </IPhoneMockup>
             ))}
           </div>
         </div>
