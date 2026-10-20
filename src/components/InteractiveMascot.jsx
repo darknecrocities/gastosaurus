@@ -1,15 +1,15 @@
 import { useState, useRef, useCallback } from 'react';
 import mascotImg from '../assets/mascot.png';
 import { sounds } from '../lib/sounds';
-import { MessageCircle } from './CustomIcons';
+import { MessageCircle, Sparkles } from './CustomIcons';
 
 const CHOMP_STORAGE_KEY = 'gastosaurus_chomps_count';
 
 const QUIPS = [
-  'Walang tatakas sa ambagan! 🦖',
+  '100% computed, 0% sama ng loob.',
+  'Walang tatakas sa ambagan!',
   'Sino umorder ng extra rice at Coke Float?!',
   'Huy, bayad muna bago mag-milk tea!',
-  '100% computed, 0% sama ng loob.',
   'Auto-balanced para walang tampuhan!',
   'Kaya mo yan! Bayaran mo na yung utang kay tropa.',
   'Walang takbuhan pagdating ng resibo!',
@@ -18,8 +18,8 @@ const QUIPS = [
 
 /**
  * Clucky-inspired interactive Gastosaurus mascot.
- * Features 3D cursor tilt tracking, physics squash/stretch, sound triggers, and witty barkada quips.
- * Badge pills removed per user request for a cleaner, modern look.
+ * Features 3D cursor tilt tracking, physics squash/stretch, cute dinosaur audio,
+ * and speech cloud overlay positioned precisely over the dinosaur's mouth.
  */
 export const InteractiveMascot = ({ className = '', showPrompt = true }) => {
   const [chomps, setChomps] = useState(() => {
@@ -53,8 +53,8 @@ export const InteractiveMascot = ({ className = '', showPrompt = true }) => {
   }, []);
 
   const handleChomp = () => {
-    sounds.playChomp();
     const nextCount = chomps + 1;
+    sounds.playCuteDino(nextCount);
     setChomps(nextCount);
     try {
       localStorage.setItem(CHOMP_STORAGE_KEY, String(nextCount));
@@ -66,11 +66,11 @@ export const InteractiveMascot = ({ className = '', showPrompt = true }) => {
     setIsChomping(true);
     setTimeout(() => setIsChomping(false), 350);
 
-    // Pick next barkada quip
-    setQuipIndex((prev) => (prev + 1) % QUIPS.length);
+    // Advance barkada quip
+    setQuipIndex((prev) => (showQuip ? (prev + 1) % QUIPS.length : prev));
     setShowQuip(true);
     clearTimeout(quipTimer.current);
-    quipTimer.current = setTimeout(() => setShowQuip(false), 4500);
+    quipTimer.current = setTimeout(() => setShowQuip(false), 5000);
   };
 
   return (
@@ -80,16 +80,7 @@ export const InteractiveMascot = ({ className = '', showPrompt = true }) => {
       onMouseMove={handlePointerMove}
       onMouseLeave={handlePointerLeave}
     >
-      {/* Quip Speech Bubble */}
-      {showQuip && (
-        <div className="mascot-speech-bubble liquid-glass-card animate-pop" role="tooltip">
-          <MessageCircle size={14} className="speech-icon" />
-          <p className="speech-text">{QUIPS[quipIndex]}</p>
-          <div className="speech-arrow" />
-        </div>
-      )}
-
-      {/* Mascot Interactive Action Button */}
+      {/* Mascot Interactive Action Button with 3D Tilt */}
       <button
         type="button"
         className={`mascot-interactive-btn ${isChomping ? 'animate-chomp' : 'animate-float'}`}
@@ -102,6 +93,15 @@ export const InteractiveMascot = ({ className = '', showPrompt = true }) => {
           transition: isChomping ? 'none' : 'transform 0.15s ease-out',
         }}
       >
+        {/* Quip Speech Bubble Overlay - Positioned Directly Over Dino's Mouth */}
+        {showQuip && (
+          <div className="mascot-speech-bubble animate-pop" role="tooltip">
+            <MessageCircle size={16} className="speech-icon" strokeWidth={2.2} />
+            <span className="speech-text">{QUIPS[quipIndex]}</span>
+            <div className="speech-arrow" aria-hidden="true" />
+          </div>
+        )}
+
         <div className="mascot-badge-circle liquid-glass-card">
           <img
             src={mascotImg}
@@ -114,7 +114,8 @@ export const InteractiveMascot = ({ className = '', showPrompt = true }) => {
         {/* Playful 'Tap me!' Hint */}
         {showPrompt && !showQuip && chomps === 0 && (
           <div className="mascot-click-hint liquid-glass-subtle animate-pop">
-            <span>Tap me! 🦕</span>
+            <Sparkles size={12} className="sparkle-accent" />
+            <span>Tap me!</span>
           </div>
         )}
       </button>

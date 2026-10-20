@@ -5,10 +5,18 @@
 
 const STORAGE_KEY = 'gastosaurus_sound_enabled';
 
+const DINO_SOUND_FILES = [
+  '/sounds/dino-chirp.mp3',
+  '/sounds/dino-rawr.mp3',
+  '/sounds/dino-pop.mp3',
+];
+
 class SoundEngine {
   constructor() {
     this.ctx = null;
     this.enabled = this.getInitialState();
+    this.audioPool = {};
+    this.soundIndex = 0;
   }
 
   getInitialState() {
@@ -114,48 +122,89 @@ class SoundEngine {
   }
 
   /**
-   * Playful double-tone dinosaur chomp/chirp for mascot interactions.
+   * Plays a cute dinosaur sound effect (alternating between rawr, chirp, pop)
+   * with automatic procedural Web Audio fallback.
    */
-  playChomp() {
+  playCuteDino(specificIndex = null) {
+    if (!this.enabled) return;
+    try {
+      this.init();
+      const idx = specificIndex !== null
+        ? Math.abs(specificIndex) % DINO_SOUND_FILES.length
+        : this.soundIndex % DINO_SOUND_FILES.length;
+      this.soundIndex = (this.soundIndex + 1) % DINO_SOUND_FILES.length;
+
+      const src = DINO_SOUND_FILES[idx];
+      let audio = this.audioPool[src];
+      if (!audio && typeof Audio !== 'undefined') {
+        audio = new Audio(src);
+        audio.preload = 'auto';
+        this.audioPool[src] = audio;
+      }
+
+      if (audio) {
+        audio.currentTime = 0;
+        audio.volume = 0.85;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            this.playCuteDinoSynth();
+          });
+        }
+      } else {
+        this.playCuteDinoSynth();
+      }
+    } catch {
+      this.playCuteDinoSynth();
+    }
+  }
+
+  /**
+   * Procedural baby dinosaur formant chirp synthesizer.
+   * Zero-latency, zero-bandwidth fallback.
+   */
+  playCuteDinoSynth() {
     if (!this.enabled) return;
     try {
       this.init();
       if (!this.ctx) return;
-
       const now = this.ctx.currentTime;
 
-      // Note 1
-      const osc1 = this.ctx.createOscillator();
-      const gain1 = this.ctx.createGain();
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(520, now);
-      osc1.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+      // Cute creature formant chirp
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
 
-      gain1.gain.setValueAtTime(0.1, now);
-      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(560, now);
+      osc.frequency.exponentialRampToValueAtTime(1250, now + 0.06);
+      osc.frequency.exponentialRampToValueAtTime(780, now + 0.16);
 
-      osc1.connect(gain1);
-      gain1.connect(this.ctx.destination);
-      osc1.start(now);
-      osc1.stop(now + 0.055);
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(800, now);
+      filter.frequency.linearRampToValueAtTime(1400, now + 0.08);
+      filter.Q.value = 4.5;
 
-      // Note 2 (bounce chomp)
-      const osc2 = this.ctx.createOscillator();
-      const gain2 = this.ctx.createGain();
-      osc2.type = 'triangle';
-      osc2.frequency.setValueAtTime(680, now + 0.06);
-      osc2.frequency.exponentialRampToValueAtTime(420, now + 0.12);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.15, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
 
-      gain2.gain.setValueAtTime(0.12, now + 0.06);
-      gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
 
-      osc2.connect(gain2);
-      gain2.connect(this.ctx.destination);
-      osc2.start(now + 0.06);
-      osc2.stop(now + 0.14);
+      osc.start(now);
+      osc.stop(now + 0.19);
     } catch {
-      /* ignore */
+      /* ignore audio context restrictions */
     }
+  }
+
+  /**
+   * Playful double-tone dinosaur chomp/chirp for mascot interactions.
+   */
+  playChomp() {
+    this.playCuteDino();
   }
 
   /**
