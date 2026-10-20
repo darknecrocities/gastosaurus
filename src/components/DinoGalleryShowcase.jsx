@@ -174,7 +174,7 @@ export const DinoGalleryShowcase = () => {
   const isVisible = (dino) => selectedCategory === 'All' || dino.category === selectedCategory;
 
   return (
-    <section className="herd-catalog-section">
+    <section id="herd" className="herd-catalog-section">
       <div className="herd-catalog-header">
         <h2 className="section-title">
           Meet the Herd: <span className="hero-title-accent text-gradient-shimmer">Pick Your Persona</span>

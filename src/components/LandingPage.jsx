@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import mascotImg from '../assets/mascot.png';
 import InteractiveMascot from './InteractiveMascot';
 import QuickSplitCalculator from './QuickSplitCalculator';
@@ -9,6 +9,7 @@ import FloatingDinosBackground from './FloatingDinosBackground';
 import RotatingHeadline from './RotatingHeadline';
 import KineticMarquee from './KineticMarquee';
 import ScrollReveal from './ScrollReveal';
+import LandingFooter from './LandingFooter';
 import { sounds } from '../lib/sounds';
 import { usePwaInstall } from '../hooks/usePwaInstall';
 import { 
@@ -23,6 +24,14 @@ import {
   Download
 } from './CustomIcons';
 
+const NAV_SECTIONS = [
+  { id: 'showcase', label: 'Showcase' },
+  { id: 'calculator', label: 'Calculator' },
+  { id: 'herd', label: 'The Herd' },
+  { id: 'settle', label: 'Settle-Up' },
+  { id: 'features', label: 'Features' },
+];
+
 export const LandingPage = ({
   onStartSaving,
   onOpenAuth,
@@ -31,7 +40,46 @@ export const LandingPage = ({
   isLoggedIn = false
 }) => {
   const [isAudioActive, setIsAudioActive] = useState(() => sounds.isEnabled());
+  const [activeSection, setActiveSection] = useState('showcase');
   const { canInstall, promptInstall } = usePwaInstall();
+
+  useEffect(() => {
+    const sectionIds = ['showcase', 'calculator', 'herd', 'settle', 'features'];
+    const handleIntersect = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, {
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0,
+    });
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollToSection = (id) => {
+    sounds.playPop();
+    setActiveSection(id);
+    const el = document.getElementById(id);
+    if (el) {
+      const navOffset = 80;
+      const elementPosition = el.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const handleToggleSound = () => {
     const next = sounds.toggle();
@@ -65,6 +113,20 @@ export const LandingPage = ({
           </span>
           <span className="brand-name">Gastosaurus</span>
         </div>
+
+        {/* Unified Navbar Section Navigation Capsule */}
+        <nav className="navbar-section-capsule" aria-label="Section navigation">
+          {NAV_SECTIONS.map((sec) => (
+            <button
+              key={sec.id}
+              type="button"
+              className={`capsule-section-btn active-press ${activeSection === sec.id ? 'active' : ''}`}
+              onClick={() => scrollToSection(sec.id)}
+            >
+              {sec.label}
+            </button>
+          ))}
+        </nav>
 
         <div className="landing-header-actions">
           {/* Sound Mute Toggle Pill */}
@@ -159,7 +221,7 @@ export const LandingPage = ({
 
       {/* Real-time Interactive Quick Split Calculator Widget */}
       <ScrollReveal animation="fade-up">
-        <section className="landing-calculator-section">
+        <section id="calculator" className="landing-calculator-section">
           <div className="calc-section-inner">
             <QuickSplitCalculator onStartSaving={onStartSaving} />
           </div>
@@ -204,7 +266,7 @@ export const LandingPage = ({
 
       {/* Debt Chain Minimizer Story Demo */}
       <ScrollReveal animation="fade-up">
-        <section className="landing-visualizer-section">
+        <section id="settle" className="landing-visualizer-section">
           <div className="visualizer-section-inner">
             <SettleUpVisualizer />
           </div>
@@ -213,7 +275,7 @@ export const LandingPage = ({
 
       {/* 07 // Bottom Section: 3 Tactile Liquid Glass Bento Cards */}
       <ScrollReveal animation="fade-up">
-        <section className="landing-bottom-cards-section">
+        <section id="features" className="landing-bottom-cards-section">
           <div className="bottom-cards-grid">
             {/* Card 1: Itemized Ambagan */}
             <div className="feature-card liquid-glass-card active-press">
@@ -256,6 +318,9 @@ export const LandingPage = ({
           </div>
         </section>
       </ScrollReveal>
+
+      {/* Website Footer with Gastosaurus Logo & Navigation */}
+      <LandingFooter onOpenDownload={onOpenDownload} onOpenAuth={onOpenAuth} />
     </div>
   );
 };

@@ -9471,3 +9471,321 @@ textarea.form-input,
     height: 70px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   UNIFIED NAVBAR SECTION NAVIGATION CAPSULE
+   ═══════════════════════════════════════════════════════════════════ */
+
+.navbar-section-capsule {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(226, 72, 110, 0.16);
+  box-shadow: 0 4px 16px -2px rgba(226, 72, 110, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.25s ease;
+}
+
+.navbar-section-capsule:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(226, 72, 110, 0.28);
+}
+
+.capsule-section-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.capsule-section-btn:hover {
+  color: #E2486E;
+  background: rgba(226, 72, 110, 0.08);
+  transform: translateY(-1px);
+}
+
+.capsule-section-btn.active {
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #E2486E 0%, #D43860 100%);
+  box-shadow: 0 4px 12px rgba(226, 72, 110, 0.3);
+  font-weight: 700;
+}
+
+@media (max-width: 960px) {
+  .navbar-section-capsule {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GASTOSAURUS BRAND FOOTER
+   ═══════════════════════════════════════════════════════════════════ */
+
+.landing-footer {
+  width: 100%;
+  border-top: 1px solid rgba(226, 72, 110, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 244, 246, 0.9) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  margin-top: 80px;
+  padding-top: 64px;
+  padding-bottom: 36px;
+  position: relative;
+  z-index: 10;
+}
+
+.landing-footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-brand-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.footer-mascot-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(226, 72, 110, 0.3);
+  box-shadow: 0 4px 14px rgba(226, 72, 110, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-brand-header:hover .footer-mascot-avatar {
+  transform: scale(1.08) rotate(4deg);
+}
+
+.footer-mascot-img {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+}
+
+.footer-brand-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-brand-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1E2026;
+  letter-spacing: -0.02em;
+}
+
+.footer-brand-tagline {
+  font-size: 12px;
+  font-weight: 600;
+  color: #E2486E;
+  letter-spacing: 0.01em;
+}
+
+.footer-brand-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #64748B;
+  max-width: 380px;
+  margin: 0;
+}
+
+.footer-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(226, 72, 110, 0.16);
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.footer-links-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-col-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1E2026;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-link-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #64748B;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.footer-link-btn:hover {
+  color: #E2486E;
+  transform: translateX(3px);
+}
+
+.footer-cta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-cta-desc {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #64748B;
+  margin: 0;
+}
+
+.footer-cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.footer-install-btn {
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-login-btn {
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  background: linear-gradient(135deg, #E2486E 0%, #D43860 100%) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(226, 72, 110, 0.25);
+}
+
+.footer-bottom-bar {
+  padding-top: 24px;
+  border-top: 1px solid rgba(226, 72, 110, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-copyright {
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748B;
+  margin: 0;
+}
+
+.footer-back-to-top-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #E2486E;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(226, 72, 110, 0.25);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-back-to-top-btn:hover {
+  transform: translateY(-2px);
+  background: #FFFFFF;
+  box-shadow: 0 6px 18px rgba(226, 72, 110, 0.2);
+}
+
+@media (max-width: 900px) {
+  .footer-top-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .footer-brand-col {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .footer-brand-col {
+    grid-column: span 1;
+  }
+  .footer-bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

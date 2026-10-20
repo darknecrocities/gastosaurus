@@ -196,7 +196,7 @@ export const PhoneAppCarousel = () => {
   const col5 = [...COLUMN_5_SCREENS, ...COLUMN_5_SCREENS];
 
   return (
-    <section className="tilted-showcase-section">
+    <section id="showcase" className="tilted-showcase-section">
       {/* Whole-Section Ambient Streaming Phone Matrix Background */}
       <div
         className="tilted-streams-canvas-wrapper"
