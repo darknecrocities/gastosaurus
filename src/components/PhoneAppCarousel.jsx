@@ -183,6 +183,8 @@ const ScreenInvite = () => (
 const COLUMN_1_SCREENS = [ScreenAmbagan, ScreenReceipt, ScreenDinos];
 const COLUMN_2_SCREENS = [ScreenDebtFlow, ScreenCalculator, ScreenGroupFeed];
 const COLUMN_3_SCREENS = [ScreenBalance, ScreenInvite, ScreenAmbagan];
+const COLUMN_4_SCREENS = [ScreenReceipt, ScreenDinos, ScreenDebtFlow];
+const COLUMN_5_SCREENS = [ScreenCalculator, ScreenGroupFeed, ScreenBalance];
 
 export const PhoneAppCarousel = () => {
   const [isPaused, setIsPaused] = useState(false);
@@ -191,12 +193,94 @@ export const PhoneAppCarousel = () => {
   const col1 = [...COLUMN_1_SCREENS, ...COLUMN_1_SCREENS];
   const col2 = [...COLUMN_2_SCREENS, ...COLUMN_2_SCREENS];
   const col3 = [...COLUMN_3_SCREENS, ...COLUMN_3_SCREENS];
+  const col4 = [...COLUMN_4_SCREENS, ...COLUMN_4_SCREENS];
+  const col5 = [...COLUMN_5_SCREENS, ...COLUMN_5_SCREENS];
 
   return (
     <section className="tilted-showcase-section">
+      {/* Whole-Section Ambient Streaming Phone Matrix Background */}
+      <div
+        className="tilted-streams-canvas-wrapper"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        aria-hidden="true"
+      >
+        <div className={`tilted-streams-canvas ${isPaused ? 'paused' : ''}`}>
+          {/* Stream Column 1: Upward */}
+          <div className="tilted-stream-col col-stream-up">
+            {col1.map((ScreenComponent, idx) => (
+              <div
+                key={`col1-${idx}`}
+                className="tilted-phone-mockup active-press"
+                onClick={() => sounds.playPop()}
+              >
+                <div className="phone-island-notch"><span className="notch-camera" /></div>
+                <ScreenComponent />
+              </div>
+            ))}
+          </div>
+
+          {/* Stream Column 2: Downward */}
+          <div className="tilted-stream-col col-stream-down">
+            {col2.map((ScreenComponent, idx) => (
+              <div
+                key={`col2-${idx}`}
+                className="tilted-phone-mockup active-press"
+                onClick={() => sounds.playPop()}
+              >
+                <div className="phone-island-notch"><span className="notch-camera" /></div>
+                <ScreenComponent />
+              </div>
+            ))}
+          </div>
+
+          {/* Stream Column 3: Upward */}
+          <div className="tilted-stream-col col-stream-up-alt">
+            {col3.map((ScreenComponent, idx) => (
+              <div
+                key={`col3-${idx}`}
+                className="tilted-phone-mockup active-press"
+                onClick={() => sounds.playPop()}
+              >
+                <div className="phone-island-notch"><span className="notch-camera" /></div>
+                <ScreenComponent />
+              </div>
+            ))}
+          </div>
+
+          {/* Stream Column 4: Downward */}
+          <div className="tilted-stream-col col-stream-down-alt">
+            {col4.map((ScreenComponent, idx) => (
+              <div
+                key={`col4-${idx}`}
+                className="tilted-phone-mockup active-press"
+                onClick={() => sounds.playPop()}
+              >
+                <div className="phone-island-notch"><span className="notch-camera" /></div>
+                <ScreenComponent />
+              </div>
+            ))}
+          </div>
+
+          {/* Stream Column 5: Upward */}
+          <div className="tilted-stream-col col-stream-up-alt2">
+            {col5.map((ScreenComponent, idx) => (
+              <div
+                key={`col5-${idx}`}
+                className="tilted-phone-mockup active-press"
+                onClick={() => sounds.playPop()}
+              >
+                <div className="phone-island-notch"><span className="notch-camera" /></div>
+                <ScreenComponent />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Foreground Content Card */}
       <div className="tilted-showcase-inner">
-        {/* Editorial Text Column */}
-        <div className="tilted-showcase-intro">
+        <div className="tilted-showcase-intro liquid-glass-card">
           <div className="section-pill liquid-glass-subtle">
             <Smartphone size={15} color="#E2486E" />
             <span>Interactive Mobile Showcase</span>
@@ -224,57 +308,6 @@ export const PhoneAppCarousel = () => {
             <div className="tilted-feat-item">
               <span className="feat-check"><CheckCircle2 size={15} color="#E2486E" /></span>
               <span>Zero-download PWA install on iOS & Android</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Tilted Alternating Multi-Stream Canvas (Pink Theme) */}
-        <div
-          className="tilted-streams-canvas-wrapper"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <div className={`tilted-streams-canvas ${isPaused ? 'paused' : ''}`}>
-            {/* Stream Column 1: Upward */}
-            <div className="tilted-stream-col col-stream-up">
-              {col1.map((ScreenComponent, idx) => (
-                <div
-                  key={`col1-${idx}`}
-                  className="tilted-phone-mockup active-press"
-                  onClick={() => sounds.playPop()}
-                >
-                  <div className="phone-island-notch"><span className="notch-camera" /></div>
-                  <ScreenComponent />
-                </div>
-              ))}
-            </div>
-
-            {/* Stream Column 2: Downward (Opposing Direction) */}
-            <div className="tilted-stream-col col-stream-down">
-              {col2.map((ScreenComponent, idx) => (
-                <div
-                  key={`col2-${idx}`}
-                  className="tilted-phone-mockup active-press"
-                  onClick={() => sounds.playPop()}
-                >
-                  <div className="phone-island-notch"><span className="notch-camera" /></div>
-                  <ScreenComponent />
-                </div>
-              ))}
-            </div>
-
-            {/* Stream Column 3: Upward */}
-            <div className="tilted-stream-col col-stream-up-alt">
-              {col3.map((ScreenComponent, idx) => (
-                <div
-                  key={`col3-${idx}`}
-                  className="tilted-phone-mockup active-press"
-                  onClick={() => sounds.playPop()}
-                >
-                  <div className="phone-island-notch"><span className="notch-camera" /></div>
-                  <ScreenComponent />
-                </div>
-              ))}
             </div>
           </div>
         </div>
