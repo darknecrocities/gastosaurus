@@ -43,7 +43,12 @@ import {
   Inbox,
   CheckCircle2,
   Settings,
-  RefreshCw
+  RefreshCw,
+  MessageCircle,
+  Volume2,
+  VolumeX,
+  Zap,
+  Sliders
 } from 'lucide-react';
 
 // Receipt Icon for Itemized Ambagan
@@ -104,5 +109,11 @@ export {
   Inbox,
   CheckCircle2,
   Settings,
-  RefreshCw
+  RefreshCw,
+  MessageCircle,
+  Volume2,
+  VolumeX,
+  Zap,
+  Sliders,
+  Calculator
 };
