@@ -12,6 +12,7 @@ import {
   X,
   Sparkles,
   Check,
+  CheckCircle2,
   ReceiptText,
   TrendingUp,
   ShieldCheck
@@ -114,7 +115,13 @@ const AuthModalContent = ({ initialMode = 'login', onClose, onAuthSuccess }) => 
 
     const errors = validate(mode, { name, email, password });
     setFieldErrors(errors);
-    if (Object.keys(errors).length > 0 || !supabase) return;
+    if (Object.keys(errors).length > 0) return;
+
+    if (!isSupabaseConfigured || !supabase) {
+      setFormError('Supabase is not configured. Copy .env.example to .env.local.');
+      sounds.playError();
+      return;
+    }
 
     setIsSubmitting(true);
     const cleanEmail = email.trim().toLowerCase();
@@ -221,13 +228,13 @@ const AuthModalContent = ({ initialMode = 'login', onClose, onAuthSuccess }) => 
 
         {/* Right Form Panel */}
         <div className="auth-split-form-panel">
-          {/* Reactive Peeking Mascot */}
+          {/* Centered Mascot Badge */}
           <div className="peeking-mascot-wrapper">
             <div className={`peeking-dino ${isPasswordFocused ? 'covering-eyes' : ''} ${isEmailValid ? 'happy-dino' : ''}`}>
               <img src={mascotImg} alt="" className="peeking-dino-avatar" />
               {isPasswordFocused && (
                 <div className="dino-eye-cover animate-pop">
-                  <span>🙈</span>
+                  <EyeOff size={22} color="#E2486E" />
                 </div>
               )}
               {isEmailValid && !isPasswordFocused && (
@@ -272,7 +279,7 @@ const AuthModalContent = ({ initialMode = 'login', onClose, onAuthSuccess }) => 
           {isSuccess ? (
             <div className="auth-success-screen animate-fade-in">
               <div className="auth-success-icon-wrap liquid-glass-subtle">
-                <span className="auth-dino-success-emoji">🦖</span>
+                <CheckCircle2 size={40} color="#059669" />
               </div>
               <h3 className="auth-success-title">{successMessage}</h3>
               <p className="auth-success-sub">Redirecting to your dashboard...</p>
@@ -280,7 +287,7 @@ const AuthModalContent = ({ initialMode = 'login', onClose, onAuthSuccess }) => 
           ) : mode === 'check-email' ? (
             <div className="auth-success-screen animate-fade-in">
               <div className="auth-success-icon-wrap liquid-glass-subtle">
-                <span className="auth-dino-success-emoji">📬</span>
+                <Mail size={40} color="#E2486E" />
               </div>
               <h3 className="auth-success-title">Check your inbox</h3>
               <p className="auth-success-sub">We sent an activation link to <strong>{email.trim().toLowerCase()}</strong>.</p>
@@ -385,7 +392,7 @@ const AuthModalContent = ({ initialMode = 'login', onClose, onAuthSuccess }) => 
               <button
                 type="submit"
                 className="btn btn-primary btn-lg btn-block auth-submit active-press"
-                disabled={isSubmitting || !isSupabaseConfigured}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <span>{submitLabel[1]}</span>
