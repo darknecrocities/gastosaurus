@@ -8853,8 +8853,8 @@ textarea.form-input,
 .herd-cards-stream {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 4px 9px;
+  gap: 10px;
+  padding: 4px 6px;
 }
 
 .herd-row-left {
@@ -8891,16 +8891,16 @@ textarea.form-input,
   }
 }
 
-/* Devlets Squircle Tile Specs */
+/* Devlets Squircle Tile Specs (Interlocking Asymmetrical Grid) */
 .herd-tile {
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.76);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(226, 72, 110, 0.14);
-  border-radius: 26px;
-  box-shadow: 0 10px 28px rgba(226, 72, 110, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 72, 110, 0.16);
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(226, 72, 110, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
   cursor: pointer;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease, opacity 0.3s ease;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease, opacity 0.3s ease;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
@@ -8909,15 +8909,16 @@ textarea.form-input,
 }
 
 .herd-tile:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 18px 40px rgba(226, 72, 110, 0.16), 0 2px 6px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 36px rgba(226, 72, 110, 0.15), 0 2px 6px rgba(0, 0, 0, 0.05);
   border-color: rgba(226, 72, 110, 0.35);
+  z-index: 2;
 }
 
 .herd-tile.active-herd-card {
   border-color: #E2486E;
   box-shadow: 0 14px 34px rgba(226, 72, 110, 0.24);
-  background: rgba(255, 245, 248, 0.92);
+  background: rgba(255, 245, 248, 0.94);
 }
 
 .herd-tile.dimmed {
@@ -8925,32 +8926,123 @@ textarea.form-input,
   filter: grayscale(40%);
 }
 
+/* 2x2 Persona Squircle */
 .squircle-persona {
-  width: 220px;
-  height: 240px;
-  padding: 18px;
+  width: 180px;
+  height: 190px;
+  padding: 14px 12px;
   align-items: center;
   text-align: center;
   justify-content: space-between;
 }
 
+/* Stacked Column of two 2x1 Bricks */
+.herd-col-stacked {
+  width: 180px;
+  height: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* 2x1 Compact Squircle Brick */
+.squircle-2x1 {
+  width: 100%;
+  height: 90px;
+  padding: 10px 12px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+}
+
+/* 4x2 Wide Feature Card */
 .squircle-wide {
-  width: 320px;
-  height: 240px;
-  padding: 20px;
+  width: 340px;
+  height: 190px;
+  padding: 16px 18px;
+  border-radius: 26px;
   justify-content: space-between;
 }
 
 .squircle-habit {
-  width: 195px;
-  height: 240px;
-  padding: 20px;
+  width: 180px;
+  height: 190px;
+  padding: 16px 14px;
   justify-content: space-between;
 }
 
 .squircle-advice {
   cursor: pointer;
-  border-left: 3px solid #8B5CF6;
+  border-left: 3.5px solid #8B5CF6;
+}
+
+/* Devlets Dark Plum Accent Glass Tile */
+.tile-dark-glass {
+  background: rgba(38, 21, 40, 0.94);
+  border: 1px solid rgba(226, 72, 110, 0.32);
+  box-shadow: 0 10px 24px rgba(38, 21, 40, 0.25), 0 1px 3px rgba(0, 0, 0, 0.12);
+  color: #FFFFFF;
+}
+
+.tile-dark-glass .tile-compact-text {
+  color: rgba(255, 240, 245, 0.82);
+}
+
+.tile-dark-glass .tile-mono-tag {
+  color: #FF85A0;
+}
+
+.tile-dark-glass .tile-metric-sub {
+  color: rgba(255, 240, 245, 0.70);
+}
+
+.tile-compact-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 6px;
+}
+
+.tile-compact-text {
+  font-size: 0.73rem;
+  color: #64748B;
+  line-height: 1.3;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tile-mono-tag {
+  font-family: 'Plus Jakarta Sans', ui-monospace, monospace;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #E2486E;
+  letter-spacing: 0.05em;
+}
+
+.tile-metric-digit {
+  font-size: 1.55rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #1F2937;
+}
+
+.tile-dark-glass .tile-metric-digit {
+  color: #FFFFFF;
+}
+
+.tile-metric-sub {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748B;
+  line-height: 1.25;
 }
 
 /* Inside Tiles */
@@ -9002,23 +9094,23 @@ textarea.form-input,
 }
 
 .tile-dino-avatar {
-  width: 90px;
-  height: 90px;
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 4px auto;
+  margin: 2px auto;
 }
 
 .tile-img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 6px 12px rgba(226, 72, 110, 0.18));
+  filter: drop-shadow(0 4px 10px rgba(226, 72, 110, 0.16));
 }
 
 .tile-dino-name {
-  font-size: 1.05rem;
+  font-size: 0.96rem;
   font-weight: 800;
   color: #1F2937;
   margin: 0;
@@ -9026,9 +9118,9 @@ textarea.form-input,
 }
 
 .tile-dino-quote {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: #6B7280;
-  line-height: 1.35;
+  line-height: 1.30;
   font-style: italic;
   margin: 0;
   display: -webkit-box;

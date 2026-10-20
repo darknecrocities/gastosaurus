@@ -13,7 +13,12 @@ import {
   Play, 
   Pause, 
   ReceiptText, 
-  CheckCircle2 
+  CheckCircle2,
+  Coffee,
+  ShieldCheck,
+  Zap,
+  Calculator,
+  TrendingUp
 } from './CustomIcons';
 
 const DINO_HERD = [
@@ -217,13 +222,32 @@ export const DinoGalleryShowcase = () => {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* ─── ROW 1: Continuous Left Motion ───────────────────────── */}
+        {/* ─── ROW 1: Continuous Left Motion (Asymmetrical Devlets Cluster) ─── */}
         <div className={`herd-marquee-row herd-row-left ${isPaused ? 'paused' : ''}`}>
           {[...Array(2)].map((_, loopIdx) => (
             <div key={`r1-loop-${loopIdx}`} className="herd-cards-stream">
+              {/* Tile: Dino Rex 2x2 Squircle */}
               <DinoTile dino={DINO_MAP.rex} isSelected={selectedDinoId === 'rex'} isVisible={isVisible(DINO_MAP.rex)} onSelect={handleSelectDino} />
 
-              {/* Card: Micro Calculation Tile (2x1 Wide) */}
+              {/* Cluster: Vertical Stacked Column of Two 2x1 Bricks */}
+              <div className="herd-col-stacked">
+                <div className="herd-tile squircle-2x1 tile-dark-glass active-press" onClick={() => sounds.playPop()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-badge-pill badge-green"><CheckCircle2 size={11} /> SHIP IT</span>
+                    <span className="tile-mono-tag">0.00¢</span>
+                  </div>
+                  <p className="tile-compact-text">Safe to settle debts with zero chat drama.</p>
+                </div>
+                <div className="herd-tile squircle-2x1 liquid-glass-card active-press" onClick={() => sounds.playClick()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-badge-pill badge-pink"><ReceiptText size={11} /> 10% SC</span>
+                    <span className="tile-mini-tag">CENTAVO</span>
+                  </div>
+                  <p className="tile-compact-text">Service charges split proportionally.</p>
+                </div>
+              </div>
+
+              {/* Tile: Micro Calculation 4x2 Wide Card */}
               <div className="herd-tile squircle-wide liquid-glass-card active-press" onClick={() => sounds.playClick()}>
                 <div className="tile-top-row">
                   <span className="tile-badge-pill badge-pink"><ReceiptText size={11} /> Samgyup Split</span>
@@ -243,27 +267,38 @@ export const DinoGalleryShowcase = () => {
                 </div>
               </div>
 
+              {/* Tile: Dino Spiky 2x2 Squircle */}
               <DinoTile dino={DINO_MAP.spiky} isSelected={selectedDinoId === 'spiky'} isVisible={isVisible(DINO_MAP.spiky)} onSelect={handleSelectDino} />
 
-              {/* Card: Habit Badge Tile */}
-              <div className="herd-tile squircle-habit liquid-glass-card active-press" onClick={() => sounds.playPop()}>
-                <div className="habit-metric-box">
-                  <span className="habit-stat">99</span>
-                  <span className="habit-sublabel">Ambagan Karma</span>
+              {/* Cluster: Vertical Stacked Column of Two 2x1 Bricks */}
+              <div className="herd-col-stacked">
+                <div className="herd-tile squircle-2x1 tile-dark-glass active-press" onClick={() => sounds.playPop()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-metric-digit">99</span>
+                    <span className="tile-mono-tag">KARMA</span>
+                  </div>
+                  <div className="tile-metric-sub">Never ghosted when the bill arrived.</div>
                 </div>
-                <p className="habit-desc">Never ghosted the barkada when the restaurant bill arrived.</p>
+                <div className="herd-tile squircle-2x1 liquid-glass-card active-press" onClick={() => sounds.playClick()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-badge-pill badge-purple"><Coffee size={11} /> Extra Rice</span>
+                    <span className="tile-mini-tag">+₱45</span>
+                  </div>
+                  <p className="tile-compact-text">Itemized automatically to eater.</p>
+                </div>
               </div>
 
+              {/* Tile: Dino Longneck 2x2 Squircle */}
               <DinoTile dino={DINO_MAP.longneck} isSelected={selectedDinoId === 'longneck'} isVisible={isVisible(DINO_MAP.longneck)} onSelect={handleSelectDino} />
             </div>
           ))}
         </div>
 
-        {/* ─── ROW 2: Continuous Right Motion (Alternating Direction!) ─── */}
+        {/* ─── ROW 2: Continuous Right Motion (Asymmetrical Devlets Cluster) ─── */}
         <div className={`herd-marquee-row herd-row-right ${isPaused ? 'paused' : ''}`}>
           {[...Array(2)].map((_, loopIdx) => (
             <div key={`r2-loop-${loopIdx}`} className="herd-cards-stream">
-              {/* Card: GCash Direct Settle Tile (2x1 Wide) */}
+              {/* Tile: GCash Direct Settle 4x2 Wide Card */}
               <div className="herd-tile squircle-wide liquid-glass-card active-press" onClick={() => sounds.playPop()}>
                 <div className="tile-top-row">
                   <span className="tile-badge-pill badge-green"><CheckCircle2 size={11} /> N-1 Settlement</span>
@@ -280,31 +315,65 @@ export const DinoGalleryShowcase = () => {
                 </div>
               </div>
 
+              {/* Tile: Dino Roar 2x2 Squircle */}
               <DinoTile dino={DINO_MAP.roar} isSelected={selectedDinoId === 'roar'} isVisible={isVisible(DINO_MAP.roar)} onSelect={handleSelectDino} />
-              <DinoTile dino={DINO_MAP.stego} isSelected={selectedDinoId === 'stego'} isVisible={isVisible(DINO_MAP.stego)} onSelect={handleSelectDino} />
 
-              {/* Card: Centavo Stepper Tile */}
-              <div className="herd-tile squircle-habit liquid-glass-card active-press" onClick={() => sounds.playClick()}>
-                <div className="habit-metric-box">
-                  <span className="habit-stat text-pink">0.00¢</span>
-                  <span className="habit-sublabel">Remainder Rule</span>
+              {/* Cluster: Vertical Stacked Column of Two 2x1 Bricks */}
+              <div className="herd-col-stacked">
+                <div className="herd-tile squircle-2x1 tile-dark-glass active-press" onClick={() => sounds.playClick()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-metric-digit text-pink">0.00¢</span>
+                    <span className="tile-mono-tag">ROUNDING</span>
+                  </div>
+                  <div className="tile-metric-sub">Largest remainder absorbs leftover 1¢.</div>
                 </div>
-                <p className="habit-desc">Largest fractional remainder absorbs the leftover 1¢.</p>
+                <div className="herd-tile squircle-2x1 liquid-glass-card active-press" onClick={() => sounds.playPop()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-badge-pill badge-green"><ShieldCheck size={11} /> Tagasalo</span>
+                    <span className="tile-mini-tag">ACTIVE</span>
+                  </div>
+                  <p className="tile-compact-text">1-tap instant payment collection.</p>
+                </div>
               </div>
 
+              {/* Tile: Dino Stego 2x2 Squircle */}
+              <DinoTile dino={DINO_MAP.stego} isSelected={selectedDinoId === 'stego'} isVisible={isVisible(DINO_MAP.stego)} onSelect={handleSelectDino} />
+
+              {/* Cluster: Vertical Stacked Column of Two 2x1 Bricks */}
+              <div className="herd-col-stacked">
+                <div className="herd-tile squircle-2x1 liquid-glass-card active-press" onClick={() => sounds.playPop()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-metric-digit text-purple">100%</span>
+                    <span className="tile-mono-tag">CLARITY</span>
+                  </div>
+                  <div className="tile-metric-sub">No awkward group chat follow-ups.</div>
+                </div>
+                <div className="herd-tile squircle-2x1 tile-dark-glass active-press" onClick={() => sounds.playClick()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-badge-pill badge-pink"><Zap size={11} /> Maya / GCash</span>
+                    <span className="tile-mini-tag">READY</span>
+                  </div>
+                  <p className="tile-compact-text">Direct QR code copy & settle.</p>
+                </div>
+              </div>
+
+              {/* Tile: Dino Trike 2x2 Squircle */}
               <DinoTile dino={DINO_MAP.trike} isSelected={selectedDinoId === 'trike'} isVisible={isVisible(DINO_MAP.trike)} onSelect={handleSelectDino} />
             </div>
           ))}
         </div>
 
-        {/* ─── ROW 3: Continuous Left Motion ───────────────────────── */}
+        {/* ─── ROW 3: Continuous Left Motion (Asymmetrical Devlets Cluster) ─── */}
         <div className={`herd-marquee-row herd-row-left-alt ${isPaused ? 'paused' : ''}`}>
           {[...Array(2)].map((_, loopIdx) => (
             <div key={`r3-loop-${loopIdx}`} className="herd-cards-stream">
+              {/* Tile: Dino Egg 2x2 Squircle */}
               <DinoTile dino={DINO_MAP.egg} isSelected={selectedDinoId === 'egg'} isVisible={isVisible(DINO_MAP.egg)} onSelect={handleSelectDino} />
+
+              {/* Tile: Dino Baby Trike 2x2 Squircle */}
               <DinoTile dino={DINO_MAP['baby-trike']} isSelected={selectedDinoId === 'baby-trike'} isVisible={isVisible(DINO_MAP['baby-trike'])} onSelect={handleSelectDino} />
 
-              {/* Card: Interactive Dino Advice Fortune Tile (2x1 Wide) */}
+              {/* Tile: Interactive Dino Advice Fortune 4x2 Wide Card */}
               <div className="herd-tile squircle-wide squircle-advice liquid-glass-card active-press" onClick={handleNextAdvice}>
                 <div className="tile-top-row">
                   <span className="tile-badge-pill badge-purple"><Sparkles size={11} /> Barkada Wisdom</span>
@@ -316,16 +385,43 @@ export const DinoGalleryShowcase = () => {
                 </div>
               </div>
 
-              {/* Card: Feed Activity Tile */}
-              <div className="herd-tile squircle-habit liquid-glass-card active-press" onClick={() => sounds.playPop()}>
-                <div className="habit-metric-box">
-                  <span className="habit-stat text-purple">100%</span>
-                  <span className="habit-sublabel">Ambagan Clarity</span>
+              {/* Cluster: Vertical Stacked Column of Two 2x1 Bricks */}
+              <div className="herd-col-stacked">
+                <div className="herd-tile squircle-2x1 tile-dark-glass active-press" onClick={() => sounds.playPop()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-metric-digit text-pink">1.8B¢</span>
+                    <span className="tile-mono-tag">EXACT</span>
+                  </div>
+                  <div className="tile-metric-sub">Zero centavo floating drift math.</div>
                 </div>
-                <p className="habit-desc">No awkward chat follow-ups required.</p>
+                <div className="herd-tile squircle-2x1 liquid-glass-card active-press" onClick={() => sounds.playClick()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-badge-pill badge-green"><TrendingUp size={11} /> Auto-Split</span>
+                    <span className="tile-mini-tag">N-1</span>
+                  </div>
+                  <p className="tile-compact-text">Collapses chains to minimal transfers.</p>
+                </div>
               </div>
 
+              {/* Tile: Dino Spiky 2x2 Squircle */}
               <DinoTile dino={DINO_MAP.spiky} isSelected={selectedDinoId === 'spiky'} isVisible={isVisible(DINO_MAP.spiky)} onSelect={handleSelectDino} />
+
+              {/* Cluster: Vertical Stacked Column of Two 2x1 Bricks */}
+              <div className="herd-col-stacked">
+                <div className="herd-tile squircle-2x1 liquid-glass-card active-press" onClick={() => sounds.playClick()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-badge-pill badge-pink"><Calculator size={11} /> Real-Time</span>
+                  </div>
+                  <p className="tile-compact-text">Live recalculation on dish assignment.</p>
+                </div>
+                <div className="herd-tile squircle-2x1 tile-dark-glass active-press" onClick={() => sounds.playPop()}>
+                  <div className="tile-compact-top">
+                    <span className="tile-metric-digit">0</span>
+                    <span className="tile-mono-tag">DRAMA</span>
+                  </div>
+                  <div className="tile-metric-sub">100% transparent group finances.</div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
