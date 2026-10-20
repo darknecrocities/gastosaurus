@@ -4,209 +4,279 @@ import dinoRex from '../assets/dinos/dino-green-rex.png';
 import dinoSpiky from '../assets/dinos/dino-pink-spiky.png';
 import dinoTrike from '../assets/dinos/dino-teal-trike.png';
 import dinoLongneck from '../assets/dinos/dino-purple-longneck.png';
+import { sounds } from '../lib/sounds';
 import {
-  ReceiptText,
   TrendingUp,
   CheckCircle2,
   Users,
-  Smartphone
+  Smartphone,
+  Calculator,
+  Wallet,
+  Sparkles
 } from './CustomIcons';
 
-const PHONE_CAROUSEL_ROWS = [
-  {
-    id: 'row-ambagan',
-    badge: 'Itemized Ambagan',
-    title: 'Samgyupsal Night Breakdown',
-    subtitle: 'Pay only for what you ate with exact centavo math',
-    icon: ReceiptText,
-    accentColor: '#E2486E',
-    items: [
-      { name: 'Beef Brisket Set', cost: '₱1,200.00', assigned: [dinoRex, dinoSpiky, dinoTrike, dinoLongneck] },
-      { name: 'Truffle Fries', cost: '₱380.00', assigned: [dinoSpiky, dinoTrike] },
-      { name: '2x Extra Rice', cost: '₱120.00', assigned: [dinoRex] },
-      { name: '+10% Service Charge', cost: 'Apportioned', assigned: [] },
-    ],
-  },
-  {
-    id: 'row-settle',
-    badge: 'Debt-Chain Minimizer',
-    title: 'Smart Settlement Flow',
-    subtitle: 'N-1 transfers: no awkward multi-way IOU circles',
-    icon: TrendingUp,
-    accentColor: '#5B3A84',
-    transfers: [
-      { from: 'Bea', to: 'Alex', amount: '₱450.00', note: 'Via GCash' },
-      { from: 'Miguel', to: 'Alex', amount: '₱520.00', note: 'Via Maya' },
-    ],
-    savingsLabel: 'Collapsed 5 multi-way payments down to 2 direct transfers',
-  },
-  {
-    id: 'row-groups',
-    badge: 'Barkada Group Sync',
-    title: 'Boracay Roadtrip 2026',
-    subtitle: '6 active dinos · Running ambagan total ₱18,450',
-    icon: Users,
-    accentColor: '#2563EB',
-    stats: [
-      { label: 'Total Ambang', val: '₱18,450' },
-      { label: 'Unsettled', val: '₱970' },
-      { label: 'Status', val: 'In Sync' },
-    ],
-  },
-  {
-    id: 'row-confirm',
-    badge: 'Receiver Confirmation',
-    title: 'Verified Settle-Up Receipt',
-    subtitle: 'Receiver confirms each payment to prevent lost receipts',
-    icon: CheckCircle2,
-    accentColor: '#059669',
-    confirmation: {
-      payer: 'Bea',
-      receiver: 'Alex',
-      amount: '₱450.00',
-      refCode: 'GC-902184-PH',
-      status: 'Confirmed by Alex ✅',
-    },
-  },
-];
+// Screen 1: Itemized Ambagan
+const ScreenAmbagan = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Itemized Ambagan</span>
+    </div>
+    <div className="mini-card-content">
+      <div className="mini-badge-pink">Samgyup Night</div>
+      <div className="mini-order-row">
+        <span>Beef Brisket Set</span>
+        <strong>₱1,200.00</strong>
+      </div>
+      <div className="mini-order-row">
+        <span>Truffle Fries</span>
+        <strong>₱380.00</strong>
+      </div>
+      <div className="mini-order-row">
+        <span>2x Extra Rice</span>
+        <strong>₱120.00</strong>
+      </div>
+      <div className="mini-avatars-row">
+        <img src={dinoRex} alt="" className="tiny-dino" />
+        <img src={dinoSpiky} alt="" className="tiny-dino" />
+        <img src={dinoTrike} alt="" className="tiny-dino" />
+        <span className="tiny-tag">+10% Service</span>
+      </div>
+    </div>
+  </div>
+);
+
+// Screen 2: Verified GCash Receipt
+const ScreenReceipt = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Settlement Proof</span>
+    </div>
+    <div className="mini-card-content text-center">
+      <div className="mini-badge-green"><CheckCircle2 size={12} /> Confirmed</div>
+      <div className="mini-big-amount text-gradient-shimmer">₱450.00</div>
+      <p className="mini-subtext">Received by Alex via GCash</p>
+      <div className="mini-ref-code">REF #GC-902184-PH</div>
+      <span className="mini-confirmed-tag">Zero Drama Verified ✅</span>
+    </div>
+  </div>
+);
+
+// Screen 3: Dino Avatar Selection
+const ScreenDinos = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Choose Persona</span>
+    </div>
+    <div className="mini-card-content">
+      <div className="mini-badge-purple"><Sparkles size={11} /> 8 Personas</div>
+      <div className="mini-dino-grid">
+        <div className="mini-dino-cell selected"><img src={dinoRex} alt="" /><span>Rex</span></div>
+        <div className="mini-dino-cell"><img src={dinoSpiky} alt="" /><span>Spiky</span></div>
+        <div className="mini-dino-cell"><img src={dinoTrike} alt="" /><span>Trike</span></div>
+        <div className="mini-dino-cell"><img src={dinoLongneck} alt="" /><span>Long</span></div>
+      </div>
+      <p className="mini-dino-role">Rex: The Tagasalo (Pays first)</p>
+    </div>
+  </div>
+);
+
+// Screen 4: Debt-Chain Minimizer Flow
+const ScreenDebtFlow = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Debt Minimizer</span>
+    </div>
+    <div className="mini-card-content">
+      <div className="mini-badge-purple"><TrendingUp size={11} /> N-1 Collapse</div>
+      <div className="mini-flow-item">
+        <span>Bea → Alex</span>
+        <strong>₱450.00</strong>
+      </div>
+      <div className="mini-flow-item">
+        <span>Miguel → Alex</span>
+        <strong>₱520.00</strong>
+      </div>
+      <p className="mini-savings-callout">5 debts collapsed into 2 transfers</p>
+    </div>
+  </div>
+);
+
+// Screen 5: Quick Split Calculator
+const ScreenCalculator = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Quick Split</span>
+    </div>
+    <div className="mini-card-content">
+      <div className="mini-badge-pink"><Calculator size={11} /> Centavo Math</div>
+      <div className="mini-bill-preview">₱1,320.00 Total</div>
+      <div className="mini-pax-preview">4 Barkada Members</div>
+      <div className="mini-split-result">
+        <span>Each:</span>
+        <strong>₱330.00</strong>
+      </div>
+    </div>
+  </div>
+);
+
+// Screen 6: Boracay Barkada Feed
+const ScreenGroupFeed = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Boracay 2026</span>
+    </div>
+    <div className="mini-card-content">
+      <div className="mini-badge-blue"><Users size={11} /> 6 Dinos Active</div>
+      <div className="mini-total-spent">₱18,450.00</div>
+      <p className="mini-subtext">Total ambagan running balance</p>
+      <div className="mini-sync-pill">● All Balances Settled</div>
+    </div>
+  </div>
+);
+
+// Screen 7: Personal Balance
+const ScreenBalance = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Personal Net</span>
+    </div>
+    <div className="mini-card-content text-center">
+      <div className="mini-badge-green"><Wallet size={11} /> You are owed</div>
+      <div className="mini-big-amount text-green">₱1,450.00</div>
+      <p className="mini-subtext">Across 3 active groups</p>
+      <div className="mini-ready-btn">Request Settle Up</div>
+    </div>
+  </div>
+);
+
+// Screen 8: Group Join Code
+const ScreenInvite = () => (
+  <div className="tilted-phone-screen">
+    <div className="mini-status-bar"><span>9:41</span><span className="status-icons">5G ●●</span></div>
+    <div className="mini-app-header">
+      <img src={mascotImg} alt="" className="mini-header-logo" />
+      <span>Invite Barkada</span>
+    </div>
+    <div className="mini-card-content text-center">
+      <div className="mini-badge-pink"><Users size={11} /> Join Code</div>
+      <div className="mini-code-box">GASTO-8821</div>
+      <p className="mini-subtext">Share link with zero signup friction</p>
+      <div className="mini-ready-btn">Copy Link 🦖</div>
+    </div>
+  </div>
+);
+
+const COLUMN_1_SCREENS = [ScreenAmbagan, ScreenReceipt, ScreenDinos];
+const COLUMN_2_SCREENS = [ScreenDebtFlow, ScreenCalculator, ScreenGroupFeed];
+const COLUMN_3_SCREENS = [ScreenBalance, ScreenInvite, ScreenAmbagan];
 
 export const PhoneAppCarousel = () => {
   const [isPaused, setIsPaused] = useState(false);
 
-  // Duplicate rows for smooth seamless infinite vertical loop
-  const displayRows = [...PHONE_CAROUSEL_ROWS, ...PHONE_CAROUSEL_ROWS];
+  // Duplicate for seamless infinite loop
+  const col1 = [...COLUMN_1_SCREENS, ...COLUMN_1_SCREENS];
+  const col2 = [...COLUMN_2_SCREENS, ...COLUMN_2_SCREENS];
+  const col3 = [...COLUMN_3_SCREENS, ...COLUMN_3_SCREENS];
 
   return (
-    <section className="phone-showcase-section">
-      <div className="phone-showcase-header">
-        <div className="section-pill liquid-glass-subtle">
-          <Smartphone size={15} color="#E2486E" />
-          <span>Non-Stop Live Preview</span>
-        </div>
-        <h2 className="section-title">
-          Experience Gastosaurus on <span className="hero-title-accent text-gradient-shimmer">Every Screen</span>
-        </h2>
-        <p className="section-subtitle">
-          Watch bills auto-balance, itemized orders compute, and debt chains collapse in real-time.
-        </p>
-      </div>
+    <section className="tilted-showcase-section">
+      <div className="tilted-showcase-inner">
+        {/* Editorial Text Column */}
+        <div className="tilted-showcase-intro">
+          <div className="section-pill liquid-glass-subtle">
+            <Smartphone size={15} color="#E2486E" />
+            <span>Interactive Mobile Showcase</span>
+          </div>
 
-      <div className="phone-frame-container">
-        {/* Realistic iPhone Style Mockup Frame */}
+          <h2 className="tilted-showcase-title">
+            MOBILE APP <br />
+            <span className="text-stroke-hollow">DESIGN</span> <br />
+            <span className="hero-title-accent text-gradient-shimmer">SYSTEM.</span>
+          </h2>
+
+          <p className="tilted-showcase-desc">
+            Engineered specifically for barkadas. Responsive, itemized, and auto-balanced in real-time on every device.
+          </p>
+
+          <div className="tilted-features-mini-list">
+            <div className="tilted-feat-item">
+              <span className="feat-check"><CheckCircle2 size={15} color="#E2486E" /></span>
+              <span>1-tap itemized dish assignment</span>
+            </div>
+            <div className="tilted-feat-item">
+              <span className="feat-check"><CheckCircle2 size={15} color="#E2486E" /></span>
+              <span>Direct GCash & Maya transfer collapse</span>
+            </div>
+            <div className="tilted-feat-item">
+              <span className="feat-check"><CheckCircle2 size={15} color="#E2486E" /></span>
+              <span>Zero-download PWA install on iOS & Android</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Tilted Alternating Multi-Stream Canvas (Pink Theme) */}
         <div
-          className="phone-mockup-outer liquid-glass-card"
+          className="tilted-streams-canvas-wrapper"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Top Speaker / Dynamic Island */}
-          <div className="phone-island">
-            <div className="island-camera" />
-            <div className="island-speaker" />
-          </div>
-
-          {/* App Header Bar Inside Phone */}
-          <div className="phone-screen-header liquid-glass-subtle">
-            <div className="phone-app-brand">
-              <img src={mascotImg} alt="" className="phone-brand-avatar" />
-              <span>Gastosaurus</span>
+          <div className={`tilted-streams-canvas ${isPaused ? 'paused' : ''}`}>
+            {/* Stream Column 1: Upward */}
+            <div className="tilted-stream-col col-stream-up">
+              {col1.map((ScreenComponent, idx) => (
+                <div
+                  key={`col1-${idx}`}
+                  className="tilted-phone-mockup active-press"
+                  onClick={() => sounds.playPop()}
+                >
+                  <div className="phone-island-notch"><span className="notch-camera" /></div>
+                  <ScreenComponent />
+                </div>
+              ))}
             </div>
-            <span className="phone-status-pill">Live Sync</span>
-          </div>
 
-          {/* 4-Row Infinite Vertical Looping Track */}
-          <div className="phone-carousel-viewport">
-            <div
-              className={`phone-carousel-track ${isPaused ? 'paused' : ''}`}
-            >
-              {displayRows.map((row, index) => {
-                const IconComponent = row.icon;
-                return (
-                  <div key={`${row.id}-${index}`} className="phone-carousel-card liquid-glass-card">
-                    <div className="phone-card-top">
-                      <span className="phone-card-badge" style={{ color: row.accentColor }}>
-                        <IconComponent size={13} />
-                        <span>{row.badge}</span>
-                      </span>
-                    </div>
+            {/* Stream Column 2: Downward (Opposing Direction) */}
+            <div className="tilted-stream-col col-stream-down">
+              {col2.map((ScreenComponent, idx) => (
+                <div
+                  key={`col2-${idx}`}
+                  className="tilted-phone-mockup active-press"
+                  onClick={() => sounds.playPop()}
+                >
+                  <div className="phone-island-notch"><span className="notch-camera" /></div>
+                  <ScreenComponent />
+                </div>
+              ))}
+            </div>
 
-                    <h4 className="phone-card-title">{row.title}</h4>
-                    <p className="phone-card-subtitle">{row.subtitle}</p>
-
-                    {/* Row 1: Itemized Ambagan */}
-                    {row.items && (
-                      <div className="phone-items-mini-list">
-                        {row.items.map((item, idx) => (
-                          <div key={idx} className="phone-item-row">
-                            <span className="phone-item-name">{item.name}</span>
-                            <div className="phone-item-meta">
-                              {item.assigned.length > 0 && (
-                                <div className="phone-item-avatars">
-                                  {item.assigned.map((avatar, aIdx) => (
-                                    <img key={aIdx} src={avatar} alt="" className="mini-avatar-dino" />
-                                  ))}
-                                </div>
-                              )}
-                              <span className="phone-item-cost">{item.cost}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Row 2: Debt-Chain Transfers */}
-                    {row.transfers && (
-                      <div className="phone-transfers-mini-list">
-                        {row.transfers.map((t, idx) => (
-                          <div key={idx} className="phone-transfer-row liquid-glass-subtle">
-                            <div className="transfer-direction">
-                              <span className="transfer-person">{t.from}</span>
-                              <span className="transfer-arrow">→</span>
-                              <span className="transfer-person">{t.to}</span>
-                            </div>
-                            <span className="transfer-amount">{t.amount}</span>
-                          </div>
-                        ))}
-                        <p className="phone-savings-note">{row.savingsLabel}</p>
-                      </div>
-                    )}
-
-                    {/* Row 3: Barkada Group Summary */}
-                    {row.stats && (
-                      <div className="phone-stats-grid">
-                        {row.stats.map((s, idx) => (
-                          <div key={idx} className="phone-stat-box liquid-glass-subtle">
-                            <span className="stat-label">{s.label}</span>
-                            <span className="stat-val">{s.val}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Row 4: Confirmed Receipt */}
-                    {row.confirmation && (
-                      <div className="phone-receipt-box liquid-glass-subtle">
-                        <div className="receipt-row">
-                          <span>Payment:</span>
-                          <strong>{row.confirmation.amount}</strong>
-                        </div>
-                        <div className="receipt-row">
-                          <span>Reference:</span>
-                          <code>{row.confirmation.refCode}</code>
-                        </div>
-                        <div className="receipt-status-confirmed">
-                          <CheckCircle2 size={14} color="#059669" />
-                          <span>{row.confirmation.status}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+            {/* Stream Column 3: Upward */}
+            <div className="tilted-stream-col col-stream-up-alt">
+              {col3.map((ScreenComponent, idx) => (
+                <div
+                  key={`col3-${idx}`}
+                  className="tilted-phone-mockup active-press"
+                  onClick={() => sounds.playPop()}
+                >
+                  <div className="phone-island-notch"><span className="notch-camera" /></div>
+                  <ScreenComponent />
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Bottom Home Indicator */}
-          <div className="phone-home-indicator" />
         </div>
       </div>
     </section>
