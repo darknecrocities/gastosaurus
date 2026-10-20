@@ -3,6 +3,9 @@ import mascotImg from '../assets/mascot.png';
 import InteractiveMascot from './InteractiveMascot';
 import QuickSplitCalculator from './QuickSplitCalculator';
 import SettleUpVisualizer from './SettleUpVisualizer';
+import PhoneAppCarousel from './PhoneAppCarousel';
+import DinoGalleryShowcase from './DinoGalleryShowcase';
+import FloatingDinosBackground from './FloatingDinosBackground';
 import { sounds } from '../lib/sounds';
 import { 
   Globe, 
@@ -12,10 +15,17 @@ import {
   HandshakeIcon,
   Volume2,
   VolumeX,
-  ArrowRight
+  ArrowRight,
+  Download
 } from './CustomIcons';
 
-export const LandingPage = ({ onStartSaving, onOpenAuth, onOpenDashboard, isLoggedIn = false }) => {
+export const LandingPage = ({
+  onStartSaving,
+  onOpenAuth,
+  onOpenDashboard,
+  onOpenDownload,
+  isLoggedIn = false
+}) => {
   const [isAudioActive, setIsAudioActive] = useState(() => sounds.isEnabled());
 
   const handleToggleSound = () => {
@@ -25,7 +35,10 @@ export const LandingPage = ({ onStartSaving, onOpenAuth, onOpenDashboard, isLogg
 
   return (
     <div className="landing-page-container">
-      {/* Liquid Glass Top Header */}
+      {/* Ambient Floating Dinos in Background */}
+      <FloatingDinosBackground />
+
+      {/* Floating Big Glassmorphism Top Header */}
       <header className="landing-header liquid-glass-subtle">
         <div className="navbar-brand landing-brand">
           <span className="mascot-avatar-wrapper liquid-glass-subtle">
@@ -47,6 +60,22 @@ export const LandingPage = ({ onStartSaving, onOpenAuth, onOpenDashboard, isLogg
             <span className="sound-toggle-text">{isAudioActive ? 'Sound ON' : 'Muted'}</span>
           </button>
 
+          {/* Download App Pill Button */}
+          {onOpenDownload && (
+            <button
+              type="button"
+              className="download-nav-btn liquid-glass-card active-press"
+              onClick={() => {
+                sounds.playClick();
+                onOpenDownload();
+              }}
+              title="Download & Install Gastosaurus PWA"
+            >
+              <Download size={15} />
+              <span>Download App</span>
+            </button>
+          )}
+
           <button
             type="button"
             className="btn btn-outline active-press"
@@ -65,10 +94,6 @@ export const LandingPage = ({ onStartSaving, onOpenAuth, onOpenDashboard, isLogg
       <section className="landing-hero-section">
         <div className="landing-hero-content">
           <div className="hero-text-col">
-            <div className="hero-badge-pill liquid-glass-subtle animate-fade-in">
-              <span>🦕 100% Ambagan Accountability</span>
-            </div>
-
             <h1 className="hero-title">
               Master Your Budget, <span className="hero-title-accent text-gradient-shimmer">Effortlessly.</span>
             </h1>
@@ -89,15 +114,32 @@ export const LandingPage = ({ onStartSaving, onOpenAuth, onOpenDashboard, isLogg
                 <span>Start Saving</span>
                 <ArrowRight size={18} />
               </button>
+
+              {onOpenDownload && (
+                <button
+                  type="button"
+                  className="btn btn-outline btn-lg active-press"
+                  onClick={() => {
+                    sounds.playClick();
+                    onOpenDownload();
+                  }}
+                >
+                  <Download size={18} />
+                  <span>Get App</span>
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Clucky-Inspired Interactive Mascot Column */}
+          {/* Clucky-Inspired Interactive Mascot Column (Badges removed) */}
           <div className="hero-visual-col">
-            <InteractiveMascot showCounter={true} showPrompt={true} />
+            <InteractiveMascot showPrompt={true} />
           </div>
         </div>
       </section>
+
+      {/* Non-Stop Looping 4-Row Smartphone Frame Carousel */}
+      <PhoneAppCarousel />
 
       {/* Real-time Interactive Quick Split Calculator Widget */}
       <section className="landing-calculator-section">
@@ -105,6 +147,9 @@ export const LandingPage = ({ onStartSaving, onOpenAuth, onOpenDashboard, isLogg
           <QuickSplitCalculator onStartSaving={onStartSaving} />
         </div>
       </section>
+
+      {/* Interactive Cursor-Tracked Dinosaur Herd Gallery (Inspired by getdevlets.com) */}
+      <DinoGalleryShowcase />
 
       {/* Middle Glass Strip: Smart Categorization & Bill Reminders */}
       <section className="landing-features-strip">

@@ -13,6 +13,7 @@ import {
   UtensilsCrossed, 
   Bell, 
   ChevronRight, 
+  ChevronLeft,
   Plus, 
   Check, 
   Users, 
@@ -48,7 +49,12 @@ import {
   Volume2,
   VolumeX,
   Zap,
-  Sliders
+  Sliders,
+  Smartphone,
+  Download,
+  Share,
+  Compass,
+  ShieldCheck
 } from 'lucide-react';
 
 // Receipt Icon for Itemized Ambagan
@@ -78,6 +84,7 @@ export {
   UtensilsCrossed,
   Bell,
   ChevronRight,
+  ChevronLeft,
   Plus,
   Check,
   Users,
@@ -115,5 +122,10 @@ export {
   VolumeX,
   Zap,
   Sliders,
-  Calculator
+  Calculator,
+  Smartphone,
+  Download,
+  Share,
+  Compass,
+  ShieldCheck
 };

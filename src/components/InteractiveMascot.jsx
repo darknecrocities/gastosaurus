@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import mascotImg from '../assets/mascot.png';
 import { sounds } from '../lib/sounds';
-import { Sparkles, MessageCircle } from './CustomIcons';
+import { MessageCircle } from './CustomIcons';
 
 const CHOMP_STORAGE_KEY = 'gastosaurus_chomps_count';
 
@@ -16,7 +16,12 @@ const QUIPS = [
   'Bawat sentimo, kwentado. Walang short, walang over!',
 ];
 
-export const InteractiveMascot = ({ className = '', showCounter = true, showPrompt = true }) => {
+/**
+ * Clucky-inspired interactive Gastosaurus mascot.
+ * Features 3D cursor tilt tracking, physics squash/stretch, sound triggers, and witty barkada quips.
+ * Badge pills removed per user request for a cleaner, modern look.
+ */
+export const InteractiveMascot = ({ className = '', showPrompt = true }) => {
   const [chomps, setChomps] = useState(() => {
     try {
       const stored = typeof window !== 'undefined' ? localStorage.getItem(CHOMP_STORAGE_KEY) : null;
@@ -57,11 +62,11 @@ export const InteractiveMascot = ({ className = '', showCounter = true, showProm
       /* ignore */
     }
 
-    // Trigger squish animation
+    // Trigger squish bounce animation
     setIsChomping(true);
     setTimeout(() => setIsChomping(false), 350);
 
-    // Pick next quip
+    // Pick next barkada quip
     setQuipIndex((prev) => (prev + 1) % QUIPS.length);
     setShowQuip(true);
     clearTimeout(quipTimer.current);
@@ -75,15 +80,6 @@ export const InteractiveMascot = ({ className = '', showCounter = true, showProm
       onMouseMove={handlePointerMove}
       onMouseLeave={handlePointerLeave}
     >
-      {/* Live Chomp Counter Pill (Clucky-inspired) */}
-      {showCounter && (
-        <div className="mascot-counter-pill liquid-glass-subtle animate-fade-in" role="status">
-          <span className="counter-icon"><Sparkles size={14} className="sparkle-accent" /></span>
-          <span className="counter-number">{chomps.toLocaleString()}</span>
-          <span className="counter-label">{chomps === 1 ? 'chomp' : 'chomps'} and counting</span>
-        </div>
-      )}
-
       {/* Quip Speech Bubble */}
       {showQuip && (
         <div className="mascot-speech-bubble liquid-glass-card animate-pop" role="tooltip">
@@ -115,7 +111,7 @@ export const InteractiveMascot = ({ className = '', showCounter = true, showProm
           />
         </div>
 
-        {/* Playful 'Click me!' Hint */}
+        {/* Playful 'Tap me!' Hint */}
         {showPrompt && !showQuip && chomps === 0 && (
           <div className="mascot-click-hint liquid-glass-subtle animate-pop">
             <span>Tap me! 🦕</span>
