@@ -157,7 +157,7 @@ export const LandingPage = ({
           ))}
         </nav>
 
-        {/* Desktop Header Actions (Hidden on <= 768px) */}
+        {/* Desktop Header Actions (Hidden on <= 1024px) */}
         <div className="landing-header-actions desktop-header-actions">
           {/* Sound Mute Toggle Pill */}
           <button
@@ -198,7 +198,7 @@ export const LandingPage = ({
           </button>
         </div>
 
-        {/* Mobile Header Triggers (Visible only on <= 768px) */}
+        {/* Mobile Header Triggers (Visible only on <= 1024px) */}
         <div className="landing-header-mobile-triggers">
           <button
             type="button"

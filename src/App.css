@@ -910,6 +910,20 @@ textarea.form-input,
 
 .landing-brand {
   cursor: default;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.landing-brand .brand-name {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.desktop-header-actions {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .landing-hero-section {
@@ -6862,6 +6876,7 @@ textarea.form-input,
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   background: rgba(255, 255, 255, 0.75);
@@ -9675,7 +9690,44 @@ textarea.form-input,
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .landing-header {
+    padding: 8px 18px;
+    gap: 8px;
+  }
+
+  .landing-brand {
+    gap: 8px;
+  }
+
+  .landing-brand .brand-name {
+    font-size: 1.25rem;
+  }
+
+  .capsule-section-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .sound-toggle-pill {
+    padding: 8px 10px;
+  }
+
+  .sound-toggle-pill .sound-toggle-text {
+    display: none;
+  }
+
+  .navbar-install-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .landing-header-actions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 1024px) {
   .navbar-section-capsule {
     display: none;
   }
@@ -9692,7 +9744,31 @@ textarea.form-input,
 
   .landing-header {
     padding: 8px 16px;
-    margin: 10px 12px 20px;
+    margin: 10px 14px 20px;
+  }
+
+  .landing-brand .brand-name {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-header {
+    padding: 6px 12px;
+    margin: 8px 10px 16px;
+  }
+
+  .landing-brand {
+    gap: 8px;
+  }
+
+  .landing-brand .brand-name {
+    font-size: 1.15rem;
+  }
+
+  .mascot-avatar-wrapper {
+    width: 38px;
+    height: 38px;
   }
 }
 
