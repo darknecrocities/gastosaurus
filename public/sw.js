@@ -1,7 +1,21 @@
 // Gastosaurus Service Worker for PWA Installation and Asset Caching
-const CACHE_NAME = 'gastosaurus-v1';
+const CACHE_NAME = 'gastosaurus-v2';
 
-self.addEventListener('install', () => {
+const PRECACHE_ASSETS = [
+  '/',
+  '/index.html',
+  '/manifest.webmanifest',
+  '/pwa-192x192.png',
+  '/pwa-512x512.png',
+  '/pwa-maskable-512x512.png',
+  '/apple-touch-icon.png',
+  '/mascot.png',
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_ASSETS)).catch(() => {})
+  );
   self.skipWaiting();
 });
 
@@ -19,7 +33,10 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match('/'))
+      fetch(event.request).catch(async () => {
+        const cached = await caches.match('/index.html');
+        return cached || caches.match('/');
+      })
     );
   }
 });

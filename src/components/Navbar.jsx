@@ -3,6 +3,7 @@ import mascotImg from '../assets/mascot.png';
 import { Bell, LogOut, Volume2, VolumeX, Download } from './CustomIcons';
 import Avatar from './Avatar';
 import { sounds } from '../lib/sounds';
+import { usePwaInstall } from '../hooks/usePwaInstall';
 
 const TABS = [
   { id: 'dashboard', label: 'Home' },
@@ -49,11 +50,26 @@ export const Navbar = ({
   onOpenDownload,
 }) => {
   const [isAudioActive, setIsAudioActive] = useState(() => sounds.isEnabled());
+  const { canInstall, promptInstall } = usePwaInstall();
   const currentPerson = authUser || (userName ? { name: userName } : null);
 
   const handleToggleSound = () => {
     const next = sounds.toggle();
     setIsAudioActive(next);
+  };
+
+  const handleDownloadClick = async () => {
+    sounds.playClick();
+    if (canInstall) {
+      const res = await promptInstall();
+      if (res?.accepted) {
+        sounds.playSuccess();
+        return;
+      }
+    }
+    if (onOpenDownload) {
+      onOpenDownload();
+    }
   };
 
   return (
@@ -93,10 +109,7 @@ export const Navbar = ({
             <button
               type="button"
               className="navbar-download-btn liquid-glass-subtle active-press"
-              onClick={() => {
-                sounds.playClick();
-                onOpenDownload();
-              }}
+              onClick={handleDownloadClick}
               title="Install Gastosaurus on your device"
               aria-label="Download app"
             >

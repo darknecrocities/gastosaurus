@@ -1,17 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
-/**
- * Hook to manage PWA installation state and trigger browser install prompts.
- */
-export function usePwaInstall() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isInstalled, setIsInstalled] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return !!(
+// Singleton state to capture beforeinstallprompt before components mount
+let globalDeferredPrompt = null;
+const globalPromptListeners = new Set();
+let globalIsInstalled = typeof window !== 'undefined'
+  ? !!(
       window.matchMedia?.('(display-mode: standalone)').matches ||
       window.navigator.standalone === true
-    );
+    )
+  : false;
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    globalDeferredPrompt = e;
+    globalPromptListeners.forEach((fn) => fn({ prompt: e, canInstall: true }));
   });
+
+  window.addEventListener('appinstalled', () => {
+    globalDeferredPrompt = null;
+    globalIsInstalled = true;
+    globalPromptListeners.forEach((fn) => fn({ prompt: null, canInstall: false, isInstalled: true }));
+  });
+}
+
+/**
+ * Enhanced Hook to manage PWA installation state, automatic install prompts,
+ * and direct browser install triggers across Android, iOS, Windows, and macOS.
+ */
+export function usePwaInstall() {
+  const [deferredPrompt, setDeferredPrompt] = useState(globalDeferredPrompt);
+  const [isInstalled, setIsInstalled] = useState(globalIsInstalled);
   const [isIos] = useState(() => {
     if (typeof window === 'undefined') return false;
     const ua = window.navigator.userAgent.toLowerCase();
@@ -19,39 +38,47 @@ export function usePwaInstall() {
   });
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
+    const handleUpdate = ({ prompt, isInstalled: installed }) => {
+      setDeferredPrompt(prompt);
+      if (installed !== undefined) {
+        setIsInstalled(installed);
+      }
     };
 
-    const handleAppInstalled = () => {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
-
+    globalPromptListeners.add(handleUpdate);
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
+      globalPromptListeners.delete(handleUpdate);
     };
   }, []);
 
-  const promptInstall = async () => {
-    if (!deferredPrompt) return false;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-      return true;
+  /**
+   * Directly triggers the browser's native PWA installation dialog.
+   * Returns true if user accepted, false if rejected or unavailable.
+   */
+  const promptInstall = useCallback(async () => {
+    const promptEvent = deferredPrompt || globalDeferredPrompt;
+    if (!promptEvent) {
+      return { supported: false, accepted: false };
     }
-    return false;
-  };
+
+    try {
+      promptEvent.prompt();
+      const choice = await promptEvent.userChoice;
+      if (choice.outcome === 'accepted') {
+        setIsInstalled(true);
+        globalDeferredPrompt = null;
+        setDeferredPrompt(null);
+        return { supported: true, accepted: true };
+      }
+      return { supported: true, accepted: false };
+    } catch (err) {
+      console.warn('[pwa] Installation prompt error:', err);
+      return { supported: true, accepted: false, error: err };
+    }
+  }, [deferredPrompt]);
 
   return {
-    canInstall: !!deferredPrompt,
+    canInstall: !!(deferredPrompt || globalDeferredPrompt),
     isInstalled,
     isIos,
     promptInstall,

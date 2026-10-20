@@ -453,6 +453,7 @@ function App() {
         onCloseAuth={() => setIsAuthOpen(false)}
         onAuthSuccess={handleAuthSuccess}
         isDownloadOpen={isDownloadOpen}
+        onOpenDownload={() => setIsDownloadOpen(true)}
         onCloseDownload={() => setIsDownloadOpen(false)}
         isCreateGroupOpen={isCreateGroupOpen}
         currentUserName={authUser?.name}

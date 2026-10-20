@@ -14,15 +14,20 @@ export const DownloadModal = ({ isOpen, onClose }) => {
   const { canInstall, isInstalled, isIos, promptInstall } = usePwaInstall();
   const [activePlatform, setActivePlatform] = useState(() => (isIos ? 'ios' : 'android'));
   const [installStatus, setInstallStatus] = useState('');
+  const [isInApp] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const ua = window.navigator.userAgent || window.navigator.vendor || '';
+    return /FBAN|FBAV|Instagram|Line|Twitter|ByteDance|TikTok/i.test(ua);
+  });
 
   if (!isOpen) return null;
 
   const handleInstallClick = async () => {
     sounds.playClick();
-    const success = await promptInstall();
-    if (success) {
+    const res = await promptInstall();
+    if (res?.accepted) {
       sounds.playSuccess();
-      setInstallStatus('Installed successfully! Open Gastosaurus from your home screen.');
+      setInstallStatus('Installed successfully! Open Gastosaurus from your home screen. 🦖');
     }
   };
 
@@ -58,6 +63,12 @@ export const DownloadModal = ({ isOpen, onClose }) => {
             Get the full native app experience right on your phone — instant load, full screen, zero app store hassle.
           </p>
         </div>
+
+        {isInApp && (
+          <div className="in-app-browser-warning liquid-glass-subtle">
+            <span>⚠️ <strong>In-App Browser Detected:</strong> Tap your browser menu (⋮ or Share) and select <em>&quot;Open in Chrome&quot;</em> or <em>&quot;Open in Safari&quot;</em> to install the PWA.</span>
+          </div>
+        )}
 
         {/* Direct One-Click Install for Supported Browsers */}
         {canInstall && !isInstalled && (

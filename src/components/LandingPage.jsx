@@ -10,6 +10,7 @@ import RotatingHeadline from './RotatingHeadline';
 import KineticMarquee from './KineticMarquee';
 import ScrollReveal from './ScrollReveal';
 import { sounds } from '../lib/sounds';
+import { usePwaInstall } from '../hooks/usePwaInstall';
 import { 
   Globe, 
   Calendar, 
@@ -30,10 +31,25 @@ export const LandingPage = ({
   isLoggedIn = false
 }) => {
   const [isAudioActive, setIsAudioActive] = useState(() => sounds.isEnabled());
+  const { canInstall, promptInstall } = usePwaInstall();
 
   const handleToggleSound = () => {
     const next = sounds.toggle();
     setIsAudioActive(next);
+  };
+
+  const handleDownloadClick = async () => {
+    sounds.playClick();
+    if (canInstall) {
+      const res = await promptInstall();
+      if (res?.accepted) {
+        sounds.playSuccess();
+        return;
+      }
+    }
+    if (onOpenDownload) {
+      onOpenDownload();
+    }
   };
 
   return (
@@ -68,10 +84,7 @@ export const LandingPage = ({
             <button
               type="button"
               className="download-nav-btn liquid-glass-card active-press"
-              onClick={() => {
-                sounds.playClick();
-                onOpenDownload();
-              }}
+              onClick={handleDownloadClick}
               title="Download & Install Gastosaurus PWA"
             >
               <Download size={15} />
@@ -120,10 +133,7 @@ export const LandingPage = ({
                 <button
                   type="button"
                   className="btn btn-outline btn-lg active-press"
-                  onClick={() => {
-                    sounds.playClick();
-                    onOpenDownload();
-                  }}
+                  onClick={handleDownloadClick}
                 >
                   <Download size={18} />
                   <span>Get App</span>

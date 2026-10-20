@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import AuthModal from './AuthModal';
 import DownloadModal from './DownloadModal';
+import PwaInstallBanner from './PwaInstallBanner';
 
 const PersonalBalanceModal = lazy(() => import('./PersonalBalanceModal'));
 const GroupDetailModal = lazy(() => import('./GroupDetailModal'));
@@ -18,6 +19,7 @@ export const AppModals = ({
   onCloseAuth,
   onAuthSuccess,
   isDownloadOpen,
+  onOpenDownload,
   onCloseDownload,
   isCreateGroupOpen,
   currentUserName,
@@ -63,6 +65,11 @@ export const AppModals = ({
       <DownloadModal
         isOpen={isDownloadOpen}
         onClose={onCloseDownload}
+      />
+
+      <PwaInstallBanner
+        onOpenGuide={onOpenDownload}
+        showToast={showToast}
       />
 
       <Suspense fallback={null}>
