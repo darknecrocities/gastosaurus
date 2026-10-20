@@ -56,7 +56,8 @@ import {
   Compass,
   ShieldCheck,
   Play,
-  Pause
+  Pause,
+  Menu
 } from 'lucide-react';
 
 // Receipt Icon for Itemized Ambagan
@@ -131,5 +132,6 @@ export {
   Compass,
   ShieldCheck,
   Play,
-  Pause
+  Pause,
+  Menu
 };

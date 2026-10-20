@@ -21,7 +21,11 @@ import {
   Volume2,
   VolumeX,
   ArrowRight,
-  Download
+  Download,
+  Menu,
+  X,
+  ChevronRight,
+  Sparkles
 } from './CustomIcons';
 
 const NAV_SECTIONS = [
@@ -41,7 +45,23 @@ export const LandingPage = ({
 }) => {
   const [isAudioActive, setIsAudioActive] = useState(() => sounds.isEnabled());
   const [activeSection, setActiveSection] = useState('showcase');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { canInstall, promptInstall } = usePwaInstall();
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    const handleResize = () => {
+      if (window.innerWidth > 768) setIsMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const sectionIds = ['showcase', 'calculator', 'herd', 'settle', 'features'];
@@ -128,7 +148,8 @@ export const LandingPage = ({
           ))}
         </nav>
 
-        <div className="landing-header-actions">
+        {/* Desktop Header Actions (Hidden on <= 768px) */}
+        <div className="landing-header-actions desktop-header-actions">
           {/* Sound Mute Toggle Pill */}
           <button
             type="button"
@@ -167,6 +188,98 @@ export const LandingPage = ({
             {isLoggedIn ? 'Go to Dashboard' : 'Log In'}
           </button>
         </div>
+
+        {/* Mobile Header Triggers (Visible only on <= 768px) */}
+        <div className="landing-header-mobile-triggers">
+          <button
+            type="button"
+            className="mobile-sound-btn liquid-glass-card active-press"
+            onClick={handleToggleSound}
+            aria-label={isAudioActive ? 'Mute sound' : 'Enable sound'}
+            title={isAudioActive ? 'Sound ON' : 'Sound OFF'}
+          >
+            {isAudioActive ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          </button>
+
+          <button
+            type="button"
+            className={`mobile-burger-btn liquid-glass-card active-press ${isMobileMenuOpen ? 'is-active' : ''}`}
+            onClick={() => {
+              sounds.playPop();
+              setIsMobileMenuOpen((prev) => !prev);
+            }}
+            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileMenuOpen}
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+        {/* Mobile Slide-Down Liquid Glass Navigation Drawer */}
+        {isMobileMenuOpen && (
+          <>
+            <div
+              className="landing-mobile-backdrop"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+            <div className="landing-mobile-drawer liquid-glass-card animate-slide-down" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+              <div className="mobile-drawer-header">
+                <span className="mobile-drawer-title">Navigation</span>
+                <span className="mobile-drawer-badge">
+                  <Sparkles size={11} color="#E2486E" /> Menu
+                </span>
+              </div>
+
+              <nav className="mobile-drawer-nav" aria-label="Mobile section navigation">
+                {NAV_SECTIONS.map((sec) => (
+                  <button
+                    key={sec.id}
+                    type="button"
+                    className={`mobile-nav-link active-press ${activeSection === sec.id ? 'active' : ''}`}
+                    onClick={() => {
+                      scrollToSection(sec.id);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <span className="mobile-nav-label">{sec.label}</span>
+                    <ChevronRight size={16} className="mobile-nav-arrow" />
+                  </button>
+                ))}
+              </nav>
+
+              <div className="mobile-drawer-actions">
+                {onOpenDownload && (
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block mobile-drawer-install-btn active-press"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      handleDownloadClick();
+                    }}
+                  >
+                    <Download size={16} />
+                    <span>Install Gastosaurus PWA</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  className="btn btn-outline btn-block active-press"
+                  onClick={() => {
+                    sounds.playClick();
+                    setIsMobileMenuOpen(false);
+                    if (isLoggedIn) onOpenDashboard?.();
+                    else onOpenAuth?.('login');
+                  }}
+                >
+                  <span>{isLoggedIn ? 'Go to Dashboard' : 'Log In / Sign Up'}</span>
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </header>
 
       {/* Hero Section with Bold Editorial Rotating Headline */}
