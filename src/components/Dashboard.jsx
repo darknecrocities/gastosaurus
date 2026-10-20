@@ -1,6 +1,7 @@
 import GroupCard from './GroupCard';
 import { pesoParts, peso } from '../lib/format';
 import netBalanceMascot from '../assets/net-balance-mascot.png';
+import { sounds } from '../lib/sounds';
 import { 
   ArrowUp, 
   ArrowDown, 
@@ -32,17 +33,19 @@ export const Dashboard = ({
       {/* Overview Header */}
       <section className="page-intro">
         <div className="page-intro-text">
-          <h1 className="page-title">Overview</h1>
+          <h1 className="page-title">
+            Financial <span className="text-gradient-shimmer">Overview</span>
+          </h1>
           <p className="page-subtitle">
-            {authUser?.name ? `Hey ${authUser.name}! Here's your financial snapshot for today.` : "Here's your financial snapshot for today."}
+            {authUser?.name ? `Hey ${authUser.name}! Here is your ambagan snapshot for today.` : "Here is your ambagan snapshot for today."}
           </p>
         </div>
       </section>
 
       {/* Top Financial Stats Cards Grid */}
       <section className="dashboard-stats-grid">
-        {/* 1. Net Balance Main Card */}
-        <div className="stat-card net-balance-card">
+        {/* 1. Net Balance Main Liquid Glass Card */}
+        <div className="stat-card net-balance-card liquid-glass-card active-press">
           <div className="net-balance-content">
             <span className="eyebrow">Net balance</span>
             <div className="stat-main-amount">
@@ -53,15 +56,21 @@ export const Dashboard = ({
 
             <div className="net-balance-actions">
               <button 
-                className="btn btn-primary"
-                onClick={onSettleUpClick}
+                className="btn btn-primary active-press"
+                onClick={() => {
+                  sounds.playClick();
+                  onSettleUpClick?.();
+                }}
                 id="btn-settle-up"
               >
                 Settle Up
               </button>
               <button 
-                className="btn btn-soft"
-                onClick={onPersonalBalanceClick}
+                className="btn btn-soft active-press"
+                onClick={() => {
+                  sounds.playClick();
+                  onPersonalBalanceClick?.();
+                }}
                 id="btn-personal-balance"
               >
                 Personal Balance
@@ -73,13 +82,13 @@ export const Dashboard = ({
             <img 
               src={netBalanceMascot} 
               alt="" 
-              className="net-balance-mascot-img"
+              className="net-balance-mascot-img animate-float"
             />
           </div>
         </div>
 
         {/* 2. YOU OWE Card */}
-        <div className="stat-card owe-card">
+        <div className="stat-card owe-card liquid-glass-card active-press">
           <div className="stat-card-top">
             <div className="stat-direction-badge owe-badge">
               <ArrowUp size={16} strokeWidth={2.5} />
@@ -98,7 +107,7 @@ export const Dashboard = ({
         </div>
 
         {/* 3. YOU ARE OWED Card */}
-        <div className="stat-card owed-card">
+        <div className="stat-card owed-card liquid-glass-card active-press">
           <div className="stat-card-top">
             <div className="stat-direction-badge owed-badge">
               <ArrowDown size={16} strokeWidth={2.5} />
@@ -122,21 +131,27 @@ export const Dashboard = ({
         <div className="section-header-row">
           <div className="section-title-wrap">
             <h2 className="section-title">Active Groups</h2>
-            <span className="section-count">{groups.length} active</span>
+            <span className="section-count liquid-glass-subtle">{groups.length} active</span>
           </div>
           <div className="section-actions-wrap">
             {onCreateGroupClick && (
               <button 
-                className="btn btn-primary btn-sm"
-                onClick={onCreateGroupClick}
+                className="btn btn-primary btn-sm active-press"
+                onClick={() => {
+                  sounds.playClick();
+                  onCreateGroupClick();
+                }}
                 title="Create a new active group"
               >
                 <Plus size={16} /> New Group
               </button>
             )}
             <button 
-              className="btn btn-ghost btn-sm"
-              onClick={onViewAllGroups}
+              className="btn btn-ghost btn-sm active-press"
+              onClick={() => {
+                sounds.playPop();
+                onViewAllGroups();
+              }}
             >
               View all <ChevronRight size={16} />
             </button>
@@ -144,7 +159,7 @@ export const Dashboard = ({
         </div>
 
         {!isLoading && groups.length === 0 && (
-          <p className="empty-text">
+          <p className="empty-text liquid-glass-subtle">
             No groups yet. Create one, add your barkada, and start splitting. 🦖
           </p>
         )}
