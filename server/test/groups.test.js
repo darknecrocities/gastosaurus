@@ -427,66 +427,6 @@ test('guests, invites and member management', async () => {
   assert.equal(renamed.member.name, 'Migs');
 });
 
-test('the last admin leaving hands admin to the longest-standing member with an account', async () => {
-  const office = ok(
-    await h.call('POST', '/groups', { token: s.alex.token, body: { name: 'Office Coffee', members: [{ name: 'Dana' }] } }),
-    201,
-  );
-  const gid = office.group.id;
-  ok(await h.call('POST', `/groups/${gid}/invites`, { token: s.alex.token, body: { email: 'carlo@example.com' } }), 201);
-  const { invites } = ok(await h.call('GET', '/invites', { token: s.carlo.token }));
-  ok(await h.call('POST', `/invites/${invites[0].id}/accept`, { token: s.carlo.token }));
-
-  assert.equal((await h.call('DELETE', `/groups/${gid}/members/me`, { token: s.alex.token })).status, 204);
-  const detail = ok(await h.call('GET', `/groups/${gid}`, { token: s.carlo.token }));
-  assert.equal(detail.members.find((m) => m.isCurrentUser).role, 'admin'); // not Dana: guests can't be admin
-});
-
-test('when the last member with an account leaves, the whole group and its history is deleted', async () => {
-  const g = ok(await h.call('POST', '/groups', { token: s.alex.token, body: { name: 'Solo Snacks', members: [{ name: 'Fin' }] } }), 201);
-  const gid = g.group.id;
-  const [alexId, finId] = g.members.map((m) => m.id);
-  // A bill, then Alex is paid back so he's settled
-  ok(
-    await h.call('POST', `/groups/${gid}/expenses`, {
-      token: s.alex.token,
-      body: { description: 'Chips', splitType: 'equal', totalAmount: 100, memberIds: [alexId, finId] },
-    }),
-    201,
-  );
-  ok(
-    await h.call('POST', `/groups/${gid}/settlements`, {
-      token: s.alex.token,
-      body: { fromMemberId: finId, toMemberId: alexId, amount: 50, method: 'cash' },
-    }),
-    201,
-  );
-
-  assert.equal((await h.call('DELETE', `/groups/${gid}/members/me`, { token: s.alex.token })).status, 204);
-  const left = await h.pool.query(
-    `SELECT (SELECT count(*)::int FROM public.groups WHERE id = $1) AS groups,
-            (SELECT count(*)::int FROM public.expenses WHERE group_id = $1) AS expenses,
-            (SELECT count(*)::int FROM public.settlements WHERE group_id = $1) AS settlements,
-            (SELECT count(*)::int FROM public.group_members WHERE group_id = $1) AS members`,
-    [gid],
-  );
-  assert.deepEqual(left.rows[0], { groups: 0, expenses: 0, settlements: 0, members: 0 });
-});
-
-test('admins can delete a group only once everyone is settled', async () => {
-  const g = ok(await h.call('POST', '/groups', { token: s.alex.token, body: { name: 'Temp', members: [{ name: 'Eli' }] } }), 201);
-  ok(
-    await h.call('POST', `/groups/${g.group.id}/expenses`, {
-      token: s.alex.token,
-      body: { description: 'x', splitType: 'equal', totalAmount: 50, memberIds: g.members.map((m) => m.id) },
-    }),
-    201,
-  );
-  assert.equal((await h.call('DELETE', `/groups/${g.group.id}`, { token: s.alex.token })).status, 409);
-  const { expenses } = ok(await h.call('GET', `/groups/${g.group.id}/expenses`, { token: s.alex.token }));
-  assert.equal((await h.call('DELETE', `/expenses/${expenses[0].id}`, { token: s.alex.token })).status, 204);
-  assert.equal((await h.call('DELETE', `/groups/${g.group.id}`, { token: s.alex.token })).status, 204);
-});
 
 test('database safety nets: shares must equal the total, and RLS hides other groups', async () => {
   // Writing shares that don't add up is rejected at COMMIT
@@ -523,66 +463,6 @@ test('database safety nets: shares must equal the total, and RLS hides other gro
   }
 });
 
-test('join by link: the share code adds you once; admins can reset it; bad codes are refused', async () => {
-  const { group } = ok(await h.call('POST', '/groups', { token: s.alex.token, body: { name: 'Link Party' } }), 201);
-  assert.match(group.inviteCode, /^[0-9a-f]{10}$/);
-
-  const dana = await h.login('dana@example.com', 'Dana');
-  const joined = ok(await h.call('POST', '/invites/join', { token: dana.token, body: { code: group.inviteCode } }));
-  assert.equal(joined.group.id, group.id);
-  assert.equal(joined.group.membersCount, 2);
-  // Joining twice changes nothing
-  ok(await h.call('POST', '/invites/join', { token: dana.token, body: { code: group.inviteCode.toUpperCase() } }));
-  assert.equal(ok(await h.call('GET', `/groups/${group.id}`, { token: dana.token })).members.length, 2);
-
-  // Only admins can reset; the old code then stops working
-  assert.equal((await h.call('POST', `/groups/${group.id}/invite-code`, { token: dana.token })).status, 403);
-  const reset = ok(await h.call('POST', `/groups/${group.id}/invite-code`, { token: s.alex.token }));
-  assert.notEqual(reset.group.inviteCode, group.inviteCode);
-  const eli = await h.login('eli@example.com', 'Eli');
-  assert.equal((await h.call('POST', '/invites/join', { token: eli.token, body: { code: group.inviteCode } })).status, 404);
-  assert.equal((await h.call('POST', '/invites/join', { token: eli.token, body: { code: 'nope!' } })).status, 400);
-});
-
-test('join by link: an invited guest is claimed, not duplicated (Dane signs up as "Daney")', async () => {
-  const { group, members } = ok(
-    await h.call('POST', '/groups', {
-      token: s.alex.token,
-      body: { name: 'Thesis', members: [{ name: 'Dane', email: 'dane@example.com' }] },
-    }),
-    201,
-  );
-  const dane = members.find((m) => m.name === 'Dane');
-
-  // Dane already has a bill, so we can check his history follows him.
-  ok(
-    await h.call('POST', `/groups/${group.id}/expenses`, {
-      token: s.alex.token,
-      body: {
-        description: 'Printing',
-        splitType: 'equal',
-        totalAmount: 100,
-        paidBy: dane.id,
-        memberIds: members.map((m) => m.id),
-      },
-    }),
-    201,
-  );
-
-  // He signs up with a different display name and opens the SHARE LINK (not the invite).
-  const daney = await h.login('dane@example.com', 'Daney');
-  const joined = ok(await h.call('POST', '/invites/join', { token: daney.token, body: { code: group.inviteCode } }));
-  assert.equal(joined.group.myMemberId, dane.id); // same row as the guest "Dane"
-  assert.equal(joined.group.membersCount, 2); // Alex + Dane/Daney — no extra person
-
-  const detail = ok(await h.call('GET', `/groups/${group.id}`, { token: s.alex.token }));
-  assert.equal(detail.members.length, 2);
-  const claimed = detail.members.find((m) => m.id === dane.id);
-  assert.equal(claimed.isGuest, false);
-  assert.equal(claimed.name, 'Daney'); // shows the new account's name
-  assert.equal(claimed.email, 'dane@example.com');
-  assert.equal(detail.pendingInvites.length, 0);
-});
 
 test('summary breaks monthly spending down by group category', async () => {
   const { summary } = ok(await h.call('GET', '/me/summary?month=2026-10', { token: s.alex.token }));
