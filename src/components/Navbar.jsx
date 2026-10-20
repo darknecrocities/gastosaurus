@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import mascotImg from '../assets/mascot.png';
-import { Bell, LogOut, Volume2, VolumeX } from './CustomIcons';
+import { Bell, LogOut, Volume2, VolumeX, Download } from './CustomIcons';
 import Avatar from './Avatar';
 import { sounds } from '../lib/sounds';
 
@@ -46,6 +46,7 @@ export const Navbar = ({
   userName,
   onOpenProfileModal,
   onLogout,
+  onOpenDownload,
 }) => {
   const [isAudioActive, setIsAudioActive] = useState(() => sounds.isEnabled());
   const currentPerson = authUser || (userName ? { name: userName } : null);
@@ -86,6 +87,23 @@ export const Navbar = ({
           >
             {isAudioActive ? <Volume2 size={18} /> : <VolumeX size={18} />}
           </button>
+
+          {/* Download App / PWA Button */}
+          {onOpenDownload && (
+            <button
+              type="button"
+              className="navbar-download-btn liquid-glass-subtle active-press"
+              onClick={() => {
+                sounds.playClick();
+                onOpenDownload();
+              }}
+              title="Install Gastosaurus on your device"
+              aria-label="Download app"
+            >
+              <Download size={16} />
+              <span className="navbar-download-label">App</span>
+            </button>
+          )}
 
           {currentPerson && onOpenProfileModal && (
             <button

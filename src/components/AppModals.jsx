@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 import AuthModal from './AuthModal';
+import DownloadModal from './DownloadModal';
 
 const PersonalBalanceModal = lazy(() => import('./PersonalBalanceModal'));
 const GroupDetailModal = lazy(() => import('./GroupDetailModal'));
@@ -16,6 +17,8 @@ export const AppModals = ({
   authMode,
   onCloseAuth,
   onAuthSuccess,
+  isDownloadOpen,
+  onCloseDownload,
   isCreateGroupOpen,
   currentUserName,
   onCloseCreateGroup,
@@ -55,6 +58,11 @@ export const AppModals = ({
         initialMode={authMode}
         onClose={onCloseAuth}
         onAuthSuccess={onAuthSuccess}
+      />
+
+      <DownloadModal
+        isOpen={isDownloadOpen}
+        onClose={onCloseDownload}
       />
 
       <Suspense fallback={null}>

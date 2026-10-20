@@ -82,6 +82,7 @@ function App() {
   const [isGroupDetailOpen, setIsGroupDetailOpen] = useState(false);
   const [isChooseDinoOpen, setIsChooseDinoOpen] = useState(false);
   const [isDinoOnboarding, setIsDinoOnboarding] = useState(false);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const [expenseDraft, setExpenseDraft] = useState(null); // { groupId, members, items, description, paidBy }
   const [paymentItems, setPaymentItems] = useState([]); // suggested payments chosen on Settlements
 
@@ -304,6 +305,7 @@ function App() {
             setIsChooseDinoOpen(true);
           }}
           onLogout={handleLogout}
+          onOpenDownload={() => setIsDownloadOpen(true)}
         />
       )}
 
@@ -314,6 +316,7 @@ function App() {
               onStartSaving={() => openAuth('login')}
               onOpenAuth={openAuth}
               onOpenDashboard={() => openAuth('login')}
+              onOpenDownload={() => setIsDownloadOpen(true)}
               isLoggedIn={!!authUser}
             />
           )}
@@ -449,6 +452,8 @@ function App() {
         authMode={authMode}
         onCloseAuth={() => setIsAuthOpen(false)}
         onAuthSuccess={handleAuthSuccess}
+        isDownloadOpen={isDownloadOpen}
+        onCloseDownload={() => setIsDownloadOpen(false)}
         isCreateGroupOpen={isCreateGroupOpen}
         currentUserName={authUser?.name}
         onCloseCreateGroup={() => setIsCreateGroupOpen(false)}
