@@ -14,7 +14,7 @@ import {
   Check,
   CheckCircle2,
   ReceiptText,
-  TrendingUp,
+  Wallet,
   ShieldCheck
 } from './CustomIcons';
 
@@ -27,9 +27,9 @@ const VALUE_POINTS = [
     icon: ReceiptText,
   },
   {
-    title: 'Debt-Chain Minimizer',
-    desc: 'Collapse messy 3-way IOUs into the absolute minimum direct GCash payments.',
-    icon: TrendingUp,
+    title: 'Easier Tracking',
+    desc: 'Keep track of all barkada expenses in one clean dashboard with zero spreadsheets or manual math.',
+    icon: Wallet,
   },
   {
     title: 'Confirmed Settle-Ups',
