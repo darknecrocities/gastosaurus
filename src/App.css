@@ -28,6 +28,13 @@
   padding: 0 var(--page-gutter) var(--space-16);
 }
 
+/* Landing page expands to full-bleed width with breathing room */
+.main-content-area:has(.landing-page-container) {
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 /* ── Page header bar (screens without the main navbar) ─────────────────── */
 .page-header-bar {
   position: sticky;
@@ -7757,7 +7764,8 @@ textarea.form-input,
    ═══════════════════════════════════════════════════════════════════ */
 
 .editorial-typography-theme {
-  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
 }
 
 .editorial-meta-index {
@@ -7797,12 +7805,20 @@ textarea.form-input,
 }
 
 .editorial-hero-title {
-  font-size: clamp(38px, 5.8vw, 76px);
+  font-size: clamp(36px, 5.2vw, 72px);
   font-weight: 900;
-  line-height: 1.04;
-  letter-spacing: -0.04em;
+  line-height: 1.20;
+  letter-spacing: -0.02em;
   color: #1E2026;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editorial-hero-line {
+  display: block;
+  line-height: inherit;
 }
 
 .text-stroke-hollow {
@@ -7818,8 +7834,8 @@ textarea.form-input,
 .hero-split-line {
   display: inline-flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
 }
 
 .rotating-word-badge {
@@ -8040,10 +8056,10 @@ textarea.form-input,
 }
 
 .tilted-showcase-title {
-  font-size: clamp(38px, 5.2vw, 68px);
+  font-size: clamp(36px, 5vw, 64px);
   font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
   color: #1E2026;
   margin-top: 14px;
   margin-bottom: 18px;
@@ -8088,9 +8104,10 @@ textarea.form-input,
   position: relative;
   height: 640px;
   overflow: hidden;
-  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent 100%);
+  mask-image: radial-gradient(ellipse 96% 88% at 50% 50%, black 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 96% 88% at 50% 50%, black 65%, transparent 100%);
   padding: 20px 0;
+  border: none;
 }
 
 .tilted-streams-canvas {
@@ -8476,6 +8493,546 @@ textarea.form-input,
   }
 }
 
+/* Responsive landing section unboxing & bounds */
+.editorial-hero-line {
+  display: block;
+}
+.editorial-hero-line.editorial-hero-italic {
+  display: inline-block;
+}
 
+.landing-header,
+.landing-hero-section,
+.landing-calculator-section,
+.landing-features-strip,
+.landing-visualizer-section,
+.landing-bottom-cards-section,
+.section-editorial-marker {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(20px, 4vw, 40px);
+  padding-right: clamp(20px, 4vw, 40px);
+}
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   DEVLETS 3-ROW NONSTOP ALTERNATING DIRECTION HERD CAROUSEL
+   ───────────────────────────────────────────────────────────────────────────── */
+.herd-catalog-section {
+  width: 100%;
+  padding: 80px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
 
+.herd-catalog-header {
+  max-width: 1280px;
+  margin: 0 auto 36px;
+  padding: 0 clamp(20px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.herd-catalog-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.herd-filter-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 72, 110, 0.15);
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(226, 72, 110, 0.06);
+}
+
+.herd-pill-btn {
+  padding: 7px 16px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: #6B7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.herd-pill-btn:hover {
+  color: #E2486E;
+  background: rgba(226, 72, 110, 0.08);
+}
+
+.herd-pill-btn.active {
+  background: #E2486E;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(226, 72, 110, 0.32);
+}
+
+.herd-pause-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #E2486E;
+  border: 1px solid rgba(226, 72, 110, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.herd-pause-btn:hover {
+  background: rgba(226, 72, 110, 0.12);
+  transform: scale(1.05);
+}
+
+/* Track wrap with gradient edge fade */
+.herd-catalog-track-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+}
+
+.herd-marquee-row {
+  display: flex;
+  width: max-content;
+  user-select: none;
+}
+
+.herd-cards-stream {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 4px 9px;
+}
+
+.herd-row-left {
+  animation: herdScrollLeft 48s linear infinite;
+}
+
+.herd-row-right {
+  animation: herdScrollRight 44s linear infinite;
+}
+
+.herd-row-left-alt {
+  animation: herdScrollLeft 52s linear infinite;
+}
+
+.herd-marquee-row.paused {
+  animation-play-state: paused !important;
+}
+
+@keyframes herdScrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes herdScrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Devlets Squircle Tile Specs */
+.herd-tile {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 72, 110, 0.14);
+  border-radius: 26px;
+  box-shadow: 0 10px 28px rgba(226, 72, 110, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease, opacity 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.herd-tile:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(226, 72, 110, 0.16), 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-color: rgba(226, 72, 110, 0.35);
+}
+
+.herd-tile.active-herd-card {
+  border-color: #E2486E;
+  box-shadow: 0 14px 34px rgba(226, 72, 110, 0.24);
+  background: rgba(255, 245, 248, 0.92);
+}
+
+.herd-tile.dimmed {
+  opacity: 0.32;
+  filter: grayscale(40%);
+}
+
+.squircle-persona {
+  width: 220px;
+  height: 240px;
+  padding: 18px;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.squircle-wide {
+  width: 320px;
+  height: 240px;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.squircle-habit {
+  width: 195px;
+  height: 240px;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.squircle-advice {
+  cursor: pointer;
+  border-left: 3px solid #8B5CF6;
+}
+
+/* Inside Tiles */
+.tile-top-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tile-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.tile-badge-pill.badge-pink {
+  background: rgba(226, 72, 110, 0.12);
+  color: #E2486E;
+}
+
+.tile-badge-pill.badge-green {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.tile-badge-pill.badge-purple {
+  background: rgba(139, 92, 246, 0.12);
+  color: #7C3AED;
+}
+
+.tile-mini-tag {
+  font-size: 0.70rem;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+.tile-live-dot {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #E2486E;
+  letter-spacing: 0.06em;
+}
+
+.tile-dino-avatar {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px auto;
+}
+
+.tile-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(226, 72, 110, 0.18));
+}
+
+.tile-dino-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1F2937;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.tile-dino-quote {
+  font-size: 0.76rem;
+  color: #6B7280;
+  line-height: 1.35;
+  font-style: italic;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Micro Calculation Tile Details */
+.tile-math-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.math-total-line {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.math-total-line span {
+  font-size: 0.76rem;
+  color: #6B7280;
+}
+
+.math-total-line strong {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #E2486E;
+  letter-spacing: -0.02em;
+}
+
+.math-pax-dinos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.math-dino-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: rgba(226, 72, 110, 0.08);
+  padding: 2px;
+}
+
+.math-tagline {
+  font-size: 0.72rem;
+  color: #9CA3AF;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+/* Habit Metric Box */
+.habit-metric-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.habit-stat {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1F2937;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.habit-sublabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.habit-desc {
+  font-size: 0.78rem;
+  color: #6B7280;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Direct Settle Preview */
+.tile-settle-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.settle-avatars-flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.settle-avatars-flow .flow-arrow {
+  color: #10B981;
+  font-weight: 900;
+}
+
+.settle-avatars-flow strong {
+  color: #059669;
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-left: auto;
+}
+
+.settle-collapsed-tag {
+  font-size: 0.72rem;
+  color: #6B7280;
+  background: rgba(16, 185, 129, 0.08);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Advice Fortune Tile */
+.advice-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.advice-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  font-style: italic;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.advice-hint {
+  font-size: 0.72rem;
+  color: #8B5CF6;
+  font-weight: 700;
+  align-self: flex-end;
+}
+
+/* Selected Active Dino Banner (Devlets Spotlight) */
+.active-dino-banner {
+  max-width: 860px;
+  margin: 36px auto 0;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 2px solid rgba(226, 72, 110, 0.25);
+  box-shadow: 0 18px 48px rgba(226, 72, 110, 0.12);
+}
+
+.active-dino-avatar-col {
+  flex-shrink: 0;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-dino-spotlight-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(226, 72, 110, 0.22));
+}
+
+.active-dino-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.active-dino-role {
+  font-size: 0.80rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.active-dino-quote {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1F2937;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.active-dino-desc {
+  font-size: 0.86rem;
+  color: #6B7280;
+  line-height: 1.45;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .active-dino-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    margin: 28px 16px 0;
+  }
+  .active-dino-info-col {
+    text-align: center;
+  }
+  .squircle-persona {
+    width: 180px;
+    height: 210px;
+    padding: 14px;
+  }
+  .squircle-wide {
+    width: 270px;
+    height: 210px;
+    padding: 14px;
+  }
+  .squircle-habit {
+    width: 165px;
+    height: 210px;
+    padding: 14px;
+  }
+  .tile-dino-avatar {
+    width: 70px;
+    height: 70px;
+  }
+}

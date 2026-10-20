@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState } from 'react';
 import dinoRex from '../assets/dinos/dino-green-rex.png';
 import dinoSpiky from '../assets/dinos/dino-pink-spiky.png';
 import dinoLongneck from '../assets/dinos/dino-purple-longneck.png';
@@ -8,7 +8,14 @@ import dinoBabyTrike from '../assets/dinos/dino-orange-baby-trike.png';
 import dinoRoar from '../assets/dinos/dino-orange-roar.png';
 import dinoEgg from '../assets/dinos/dino-green-egg.png';
 import { sounds } from '../lib/sounds';
-import { ChevronLeft, ChevronRight, Sparkles, Compass } from './CustomIcons';
+import { 
+  Sparkles, 
+  Compass, 
+  Play, 
+  Pause, 
+  ReceiptText, 
+  CheckCircle2 
+} from './CustomIcons';
 
 const DINO_HERD = [
   {
@@ -17,9 +24,10 @@ const DINO_HERD = [
     title: 'The Tagasalo',
     tagline: 'Always pays the restaurant bill first, collects GCash later.',
     badge: 'Card Holder',
+    category: 'Spenders',
     color: '#059669',
     img: dinoRex,
-    quote: '"Kaskas ko muna, send na lang kayo sa GCash!"',
+    quote: '"Kaskas ko muna, send na lang sa GCash!"',
   },
   {
     id: 'spiky',
@@ -27,6 +35,7 @@ const DINO_HERD = [
     title: 'The Centavo Auditor',
     tagline: 'Calculates the 10% service charge down to 25 centavos exact.',
     badge: 'Auditor',
+    category: 'Accountants',
     color: '#E2486E',
     img: dinoSpiky,
     quote: '"Wait, sino may order nung extra truffle dip?"',
@@ -37,6 +46,7 @@ const DINO_HERD = [
     title: 'The Extra Rice Fan',
     tagline: 'Never forgets their add-ons and always settles debts instantly.',
     badge: 'Quick Payer',
+    category: 'Spenders',
     color: '#0D9488',
     img: dinoTrike,
     quote: '"Kasama na yung second cup of rice sa ambag ko!"',
@@ -47,6 +57,7 @@ const DINO_HERD = [
     title: 'The Big Spender',
     tagline: 'Suggests ordering the wagyu platter and two desserts for the table.',
     badge: 'Foodie',
+    category: 'Spenders',
     color: '#7C3AED',
     img: dinoLongneck,
     quote: '"Minsan lang tayo mabuhay, orderin na natin lahat!"',
@@ -57,6 +68,7 @@ const DINO_HERD = [
     title: 'The Gentle Reminder',
     tagline: 'Kindly drops the QR code in the group chat at 10 PM.',
     badge: 'Organizer',
+    category: 'Savers',
     color: '#EA580C',
     img: dinoRoar,
     quote: '"Hello po sa mga hindi pa nakaka-ambag, love you all!"',
@@ -67,6 +79,7 @@ const DINO_HERD = [
     title: 'The Housemate Accountant',
     tagline: 'Automates electricity, water, and condo rent splits without sweat.',
     badge: 'Housemate',
+    category: 'Accountants',
     color: '#16A34A',
     img: dinoStego,
     quote: '"Kalahati sa Meralco, tapos hati tayo sa drinking water."',
@@ -77,6 +90,7 @@ const DINO_HERD = [
     title: 'The Budget Student',
     tagline: 'Knows every student discount, happy hour promo, and BOGO coupon.',
     badge: 'Saver',
+    category: 'Savers',
     color: '#D97706',
     img: dinoBabyTrike,
     quote: '"May 20% student discount kung ipakita natin school ID!"',
@@ -87,133 +101,249 @@ const DINO_HERD = [
     title: 'The First-Timer',
     tagline: 'Just hatched into the barkada trip, ready to learn the ambagan way.',
     badge: 'Rookie',
+    category: 'First-Timers',
     color: '#65A30D',
     img: dinoEgg,
     quote: '"Paano po mag-join sa group code sa Gastosaurus?"',
   },
 ];
 
+const DINO_MAP = Object.fromEntries(DINO_HERD.map((d) => [d.id, d]));
+const CATEGORIES = ['All', 'Spenders', 'Accountants', 'Savers', 'First-Timers'];
+
+const BARKADA_ADVICE = [
+  'Never split evenly when someone ordered the USDA Wagyu.',
+  'Tagasalo points expire if GCash is delayed by 3 business days.',
+  'The second cup of rice is always legally taxable under ambagan law.',
+  'Auto-calculated service charge prevents 99% of barkada breakups.',
+  'Send the GCash screenshot with the reference number intact.',
+];
+
+/**
+ * Reusable Tactile Squircle Dino Tile (Devlets design language).
+ */
+const DinoTile = ({ dino, isSelected, isVisible, onSelect }) => (
+  <div
+    className={`herd-tile squircle-persona liquid-glass-card active-press ${
+      isSelected ? 'active-herd-card' : ''
+    } ${!isVisible ? 'dimmed' : ''}`}
+    onClick={() => onSelect(dino.id)}
+  >
+    <div className="tile-top-row">
+      <span className="tile-badge-pill" style={{ background: `${dino.color}18`, color: dino.color }}>
+        {dino.badge}
+      </span>
+      <span className="tile-mini-tag">{dino.category}</span>
+    </div>
+    <div className="tile-dino-avatar">
+      <img src={dino.img} alt={dino.name} className="tile-img animate-float" />
+    </div>
+    <h3 className="tile-dino-name">{dino.name}</h3>
+    <p className="tile-dino-quote">{dino.quote}</p>
+  </div>
+);
+
+/**
+ * Devlets-Inspired 3-Row Nonstop Alternating Direction Herd Carousel.
+ * Features tactile squircle micro-widgets, category pills, motion control,
+ * and seamless gradient edge blending in Gastosaurus pink liquid glass theme.
+ */
 export const DinoGalleryShowcase = () => {
   const [selectedDinoId, setSelectedDinoId] = useState('spiky');
-  const scrollContainerRef = useRef(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [isPaused, setIsPaused] = useState(false);
+  const [adviceIndex, setAdviceIndex] = useState(0);
 
-  const activeDino = DINO_HERD.find((d) => d.id === selectedDinoId) || DINO_HERD[0];
+  const activeDino = DINO_MAP[selectedDinoId] || DINO_HERD[0];
 
-  // Cursor-driven horizontal panning across the section
-  const handleSectionMouseMove = useCallback((e) => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const rect = container.getBoundingClientRect();
-    const relativeX = (e.clientX - rect.left) / rect.width;
-    const clampedRatio = Math.max(0, Math.min(1, relativeX));
-
-    const maxScroll = container.scrollWidth - container.clientWidth;
-    if (maxScroll > 0) {
-      container.scrollTo({
-        left: clampedRatio * maxScroll,
-        behavior: 'smooth',
-      });
-    }
-  }, []);
-
-  const handleScrollStep = (direction) => {
-    sounds.playClick();
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    const scrollAmount = direction === 'left' ? -280 : 280;
-    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-  };
-
-  const handleSelectDino = (dino) => {
+  const handleSelectDino = (dinoId) => {
     sounds.playPop();
-    setSelectedDinoId(dino.id);
+    setSelectedDinoId(dinoId);
   };
+
+  const handleNextAdvice = (e) => {
+    e.stopPropagation();
+    sounds.playChomp();
+    setAdviceIndex((prev) => (prev + 1) % BARKADA_ADVICE.length);
+  };
+
+  const isVisible = (dino) => selectedCategory === 'All' || dino.category === selectedCategory;
 
   return (
-    <section className="dino-gallery-section" onMouseMove={handleSectionMouseMove}>
-      <div className="dino-gallery-header">
+    <section className="herd-catalog-section">
+      <div className="herd-catalog-header">
         <div className="section-pill liquid-glass-subtle">
           <Compass size={15} color="#E2486E" />
-          <span>Interactive Dinosaur Herd</span>
+          <span>Devlets Architecture Catalog</span>
         </div>
         <h2 className="section-title">
           Meet the Herd: <span className="hero-title-accent text-gradient-shimmer">Pick Your Persona</span>
         </h2>
         <p className="section-subtitle">
-          Hover or move your cursor sideways to explore every dinosaur. Tap any avatar to inspect their ambagan personality.
+          3-row nonstop live carousel. Hover to pause, click to inspect their barkada habits.
         </p>
 
-        {/* Gallery Scroll Controls */}
-        <div className="gallery-nav-buttons">
-          <button
-            type="button"
-            className="gallery-nav-btn active-press liquid-glass-card"
-            onClick={() => handleScrollStep('left')}
-            aria-label="Scroll gallery left"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            type="button"
-            className="gallery-nav-btn active-press liquid-glass-card"
-            onClick={() => handleScrollStep('right')}
-            aria-label="Scroll gallery right"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      </div>
-
-      {/* Horizontally Panning Gallery Track */}
-      <div className="dino-gallery-scroll-wrapper">
-        <div ref={scrollContainerRef} className="dino-gallery-track">
-          {DINO_HERD.map((dino) => {
-            const isSelected = dino.id === selectedDinoId;
-            return (
-              <div
-                key={dino.id}
-                className={`dino-showcase-card liquid-glass-card active-press ${isSelected ? 'active-dino-card' : ''}`}
-                onClick={() => handleSelectDino(dino)}
-                onMouseEnter={() => sounds.playPop()}
-                style={{
-                  '--dino-accent': dino.color,
+        {/* Category Filter Pills & Auto-Scroll Pause Button (Devlets Style) */}
+        <div className="herd-catalog-controls">
+          <div className="herd-filter-pills" role="tablist" aria-label="Filter dinosaur archetypes">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`herd-pill-btn active-press ${selectedCategory === cat ? 'active' : ''}`}
+                onClick={() => {
+                  sounds.playClick();
+                  setSelectedCategory(cat);
                 }}
               >
-                <div className="dino-card-badge-row">
-                  <span className="dino-role-badge" style={{ backgroundColor: `${dino.color}18`, color: dino.color }}>
-                    {dino.badge}
-                  </span>
-                </div>
+                {cat}
+              </button>
+            ))}
+          </div>
 
-                <div className="dino-card-avatar-wrap">
-                  <img src={dino.img} alt={dino.name} className="dino-card-avatar-img" />
-                </div>
-
-                <h3 className="dino-card-name">{dino.name}</h3>
-                <h4 className="dino-card-title">{dino.title}</h4>
-                <p className="dino-card-tagline">{dino.tagline}</p>
-
-                {isSelected && (
-                  <div className="dino-selected-indicator animate-pop">
-                    <Sparkles size={14} color={dino.color} />
-                    <span>Selected</span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          <button
+            type="button"
+            className="herd-pause-btn active-press liquid-glass-card"
+            onClick={() => {
+              sounds.playClick();
+              setIsPaused((prev) => !prev);
+            }}
+            aria-label={isPaused ? 'Resume nonstop carousel motion' : 'Pause nonstop carousel motion'}
+            title={isPaused ? 'Play motion' : 'Pause motion'}
+          >
+            {isPaused ? <Play size={15} /> : <Pause size={15} />}
+          </button>
         </div>
       </div>
 
-      {/* Active Dino Highlight Banner */}
+      {/* 3-Row Nonstop Alternating Marquee Track */}
+      <div 
+        className="herd-catalog-track-wrap"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* ─── ROW 1: Continuous Left Motion ───────────────────────── */}
+        <div className={`herd-marquee-row herd-row-left ${isPaused ? 'paused' : ''}`}>
+          {[...Array(2)].map((_, loopIdx) => (
+            <div key={`r1-loop-${loopIdx}`} className="herd-cards-stream">
+              <DinoTile dino={DINO_MAP.rex} isSelected={selectedDinoId === 'rex'} isVisible={isVisible(DINO_MAP.rex)} onSelect={handleSelectDino} />
+
+              {/* Card: Micro Calculation Tile (2x1 Wide) */}
+              <div className="herd-tile squircle-wide liquid-glass-card active-press" onClick={() => sounds.playClick()}>
+                <div className="tile-top-row">
+                  <span className="tile-badge-pill badge-pink"><ReceiptText size={11} /> Samgyup Split</span>
+                  <span className="tile-live-dot">● LIVE MATH</span>
+                </div>
+                <div className="tile-math-body">
+                  <div className="math-total-line">
+                    <span>₱1,200 Brisket + ₱380 Fries</span>
+                    <strong>₱450.25 / pax</strong>
+                  </div>
+                  <div className="math-pax-dinos">
+                    <img src={dinoRex} alt="" className="math-dino-icon" />
+                    <img src={dinoSpiky} alt="" className="math-dino-icon" />
+                    <img src={dinoTrike} alt="" className="math-dino-icon" />
+                    <span className="math-tagline">10% SC included</span>
+                  </div>
+                </div>
+              </div>
+
+              <DinoTile dino={DINO_MAP.spiky} isSelected={selectedDinoId === 'spiky'} isVisible={isVisible(DINO_MAP.spiky)} onSelect={handleSelectDino} />
+
+              {/* Card: Habit Badge Tile */}
+              <div className="herd-tile squircle-habit liquid-glass-card active-press" onClick={() => sounds.playPop()}>
+                <div className="habit-metric-box">
+                  <span className="habit-stat">99</span>
+                  <span className="habit-sublabel">Ambagan Karma</span>
+                </div>
+                <p className="habit-desc">Never ghosted the barkada when the restaurant bill arrived.</p>
+              </div>
+
+              <DinoTile dino={DINO_MAP.longneck} isSelected={selectedDinoId === 'longneck'} isVisible={isVisible(DINO_MAP.longneck)} onSelect={handleSelectDino} />
+            </div>
+          ))}
+        </div>
+
+        {/* ─── ROW 2: Continuous Right Motion (Alternating Direction!) ─── */}
+        <div className={`herd-marquee-row herd-row-right ${isPaused ? 'paused' : ''}`}>
+          {[...Array(2)].map((_, loopIdx) => (
+            <div key={`r2-loop-${loopIdx}`} className="herd-cards-stream">
+              {/* Card: GCash Direct Settle Tile (2x1 Wide) */}
+              <div className="herd-tile squircle-wide liquid-glass-card active-press" onClick={() => sounds.playPop()}>
+                <div className="tile-top-row">
+                  <span className="tile-badge-pill badge-green"><CheckCircle2 size={11} /> N-1 Settlement</span>
+                  <span className="tile-mini-tag">GCash Verified</span>
+                </div>
+                <div className="tile-settle-preview">
+                  <div className="settle-avatars-flow">
+                    <span>Bea</span>
+                    <span className="flow-arrow">→</span>
+                    <span>Alex</span>
+                    <strong>₱450.00</strong>
+                  </div>
+                  <span className="settle-collapsed-tag">5 debts collapsed into 2 direct transfers</span>
+                </div>
+              </div>
+
+              <DinoTile dino={DINO_MAP.roar} isSelected={selectedDinoId === 'roar'} isVisible={isVisible(DINO_MAP.roar)} onSelect={handleSelectDino} />
+              <DinoTile dino={DINO_MAP.stego} isSelected={selectedDinoId === 'stego'} isVisible={isVisible(DINO_MAP.stego)} onSelect={handleSelectDino} />
+
+              {/* Card: Centavo Stepper Tile */}
+              <div className="herd-tile squircle-habit liquid-glass-card active-press" onClick={() => sounds.playClick()}>
+                <div className="habit-metric-box">
+                  <span className="habit-stat text-pink">0.00¢</span>
+                  <span className="habit-sublabel">Remainder Rule</span>
+                </div>
+                <p className="habit-desc">Largest fractional remainder absorbs the leftover 1¢.</p>
+              </div>
+
+              <DinoTile dino={DINO_MAP.trike} isSelected={selectedDinoId === 'trike'} isVisible={isVisible(DINO_MAP.trike)} onSelect={handleSelectDino} />
+            </div>
+          ))}
+        </div>
+
+        {/* ─── ROW 3: Continuous Left Motion ───────────────────────── */}
+        <div className={`herd-marquee-row herd-row-left-alt ${isPaused ? 'paused' : ''}`}>
+          {[...Array(2)].map((_, loopIdx) => (
+            <div key={`r3-loop-${loopIdx}`} className="herd-cards-stream">
+              <DinoTile dino={DINO_MAP.egg} isSelected={selectedDinoId === 'egg'} isVisible={isVisible(DINO_MAP.egg)} onSelect={handleSelectDino} />
+              <DinoTile dino={DINO_MAP['baby-trike']} isSelected={selectedDinoId === 'baby-trike'} isVisible={isVisible(DINO_MAP['baby-trike'])} onSelect={handleSelectDino} />
+
+              {/* Card: Interactive Dino Advice Fortune Tile (2x1 Wide) */}
+              <div className="herd-tile squircle-wide squircle-advice liquid-glass-card active-press" onClick={handleNextAdvice}>
+                <div className="tile-top-row">
+                  <span className="tile-badge-pill badge-purple"><Sparkles size={11} /> Barkada Wisdom</span>
+                  <span className="tile-mini-tag">Tap for Advice ✦</span>
+                </div>
+                <div className="advice-body">
+                  <p className="advice-text">&quot;{BARKADA_ADVICE[adviceIndex]}&quot;</p>
+                  <span className="advice-hint">Next advice →</span>
+                </div>
+              </div>
+
+              {/* Card: Feed Activity Tile */}
+              <div className="herd-tile squircle-habit liquid-glass-card active-press" onClick={() => sounds.playPop()}>
+                <div className="habit-metric-box">
+                  <span className="habit-stat text-purple">100%</span>
+                  <span className="habit-sublabel">Ambagan Clarity</span>
+                </div>
+                <p className="habit-desc">No awkward chat follow-ups required.</p>
+              </div>
+
+              <DinoTile dino={DINO_MAP.spiky} isSelected={selectedDinoId === 'spiky'} isVisible={isVisible(DINO_MAP.spiky)} onSelect={handleSelectDino} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Selected Dino Active Spotlight Banner */}
       <div className="active-dino-banner liquid-glass-card animate-fade-in" style={{ borderColor: `${activeDino.color}40` }}>
         <div className="active-dino-avatar-col">
           <img src={activeDino.img} alt={activeDino.name} className="active-dino-spotlight-img animate-float" />
         </div>
         <div className="active-dino-info-col">
           <span className="active-dino-role" style={{ color: activeDino.color }}>
-            {activeDino.title} · {activeDino.badge}
+            {activeDino.title} · {activeDino.badge} ({activeDino.category})
           </span>
           <h3 className="active-dino-quote">{activeDino.quote}</h3>
           <p className="active-dino-desc">{activeDino.tagline}</p>

@@ -36,17 +36,17 @@ export const RotatingHeadline = () => {
       </div>
 
       <h1 className="editorial-hero-title">
-        STOP THE AWKWARD <br />
-        <span className="text-stroke-hollow">CHAT MATH.</span> <br />
-        <span className="hero-split-line">
-          SPLIT FOR{' '}
+        <span className="editorial-hero-line">STOP THE AWKWARD</span>
+        <span className="editorial-hero-line text-stroke-hollow">CHAT MATH.</span>
+        <span className="editorial-hero-line hero-split-line">
+          <span>SPLIT FOR</span>
           <span className={`rotating-word-badge liquid-glass-subtle ${isFlipping ? 'flipping-out' : 'flipping-in'}`}>
             <span className="rotating-word-text text-gradient-shimmer">
               {ROTATING_PHRASES[index]}
             </span>
           </span>
-        </span> <br />
-        WITH ZERO DRAMA.
+        </span>
+        <span className="editorial-hero-line">WITH ZERO DRAMA.</span>
       </h1>
     </div>
   );
