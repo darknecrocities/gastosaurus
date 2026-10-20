@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { ArrowRight, Plus, Check, CheckCircle2, Utensils, GripVertical, Inbox, X, Users } from './CustomIcons';
-import Avatar from './Avatar';
+import { ArrowRight, Plus, CheckCircle2, Utensils, GripVertical, X } from './CustomIcons';
 import PageHeader from './PageHeader';
+import AmbaganBucketCard from './AmbaganBucketCard';
+import ItemSplitModal from './ItemSplitModal';
 import { expensesApi } from '../lib/api';
 import { peso, todayISO } from '../lib/format';
 
@@ -348,130 +349,35 @@ export const ItemizedAmbaganView = ({
           <div className="member-buckets-col">
             <div className="member-buckets-grid">
               {buckets.map((bucket) => (
-                <div key={bucket.id} className={`member-bucket-card ${dragOverTargetId === bucket.id ? 'bucket-drag-hover' : ''}`}>
-                  <div className="bucket-card-header">
-                    <div className="bucket-avatar-wrapper">
-                      <Avatar person={bucket} className="bucket-avatar-img" />
-                    </div>
-                    <h3 className="bucket-member-name">{nameOf[bucket.id]}</h3>
-                  </div>
-
-                  <div
-                    className={`bucket-items-dropzone ${dragOverTargetId === bucket.id ? 'drag-over-active' : ''}`}
-                    onDragOver={(e) => handleDragOver(e, bucket.id)}
-                    onDragLeave={(e) => handleDragLeave(e, bucket.id)}
-                    onDrop={(e) => handleDropOnBucket(e, bucket.id)}
-                  >
-                    {bucket.assignedItems.map((assigned) => {
-                      const isMenuOpen = activeReassignMenu?.bucketId === bucket.id && activeReassignMenu?.itemId === assigned.id;
-                      return (
-                        <div
-                          key={assigned.id}
-                          className={`bucket-assigned-item-row ${draggedItemData?.itemId === assigned.id ? 'is-dragging' : ''}`}
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, assigned.id, bucket.id)}
-                          onDragEnd={endDrag}
-                          title="Drag to move to another person, or use the split menu"
-                        >
-                          <div className="assigned-item-left">
-                            <GripVertical size={14} className="drag-handle-icon" />
-                            <span className="assigned-item-title">{assigned.name}</span>
-                          </div>
-
-                          <div className="assigned-item-right">
-                            <span className="assigned-item-amount">{peso(assigned.price)}</span>
-
-                            <div className="reassign-btn-wrapper" onClick={(e) => e.stopPropagation()}>
-                              <button
-                                type="button"
-                                className="btn-reassign-item"
-                                onClick={() => setActiveReassignMenu(isMenuOpen ? null : { bucketId: bucket.id, itemId: assigned.id })}
-                                title="Split with others"
-                                aria-label="Split with others"
-                              >
-                                <Users size={12} color="#FFFFFF" strokeWidth={2.4} />
-                              </button>
-
-                              {isMenuOpen && (() => {
-                                const sharedBy = itemById(assigned.id)?.memberIds ?? [];
-                                const sharedWithAll = members.every((m) => sharedBy.includes(m.id));
-                                return (
-                                  <div className="reassign-dropdown-menu animate-fade-in">
-                                    <span className="reassign-menu-title">Split with:</span>
-                                    <button
-                                      type="button"
-                                      className={`reassign-menu-item split-with-opt ${sharedWithAll ? 'is-selected' : ''}`}
-                                      onClick={() => {
-                                        setActiveReassignMenu(null);
-                                        splitWithAll(assigned.id);
-                                      }}
-                                    >
-                                      <span>All</span>
-                                      {sharedWithAll && <Check size={13} color="#7C3AED" strokeWidth={3} />}
-                                    </button>
-                                    {members
-                                      .filter((m) => m.id !== bucket.id)
-                                      .map((target) => {
-                                        const isOn = sharedBy.includes(target.id);
-                                        return (
-                                          <button
-                                            key={target.id}
-                                            type="button"
-                                            className={`reassign-menu-item split-with-opt ${isOn ? 'is-selected' : ''}`}
-                                            onClick={() => toggleSplitWith(assigned.id, bucket.id, target.id)}
-                                          >
-                                            <span>{nameOf[target.id]}</span>
-                                            {isOn && <Check size={13} color="#7C3AED" strokeWidth={3} />}
-                                          </button>
-                                        );
-                                      })}
-                                    <button
-                                      type="button"
-                                      className="reassign-menu-item unassign-opt"
-                                      onClick={() => {
-                                        setActiveReassignMenu(null);
-                                        handleUnassignItem(bucket.id, assigned.id);
-                                      }}
-                                    >
-                                      ↩ Unassign Item
-                                    </button>
-                                  </div>
-                                );
-                              })()}
-                            </div>
-
-                            <button
-                              type="button"
-                              className="btn-remove-assigned-item"
-                              onClick={() => handleUnassignItem(bucket.id, assigned.id)}
-                              title="Unassign item"
-                            >
-                              <X size={13} />
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-
-                    {bucket.assignedItems.length === 0 && (
-                      <div className="bucket-empty-drop-placeholder">
-                        <Inbox size={26} strokeWidth={1.8} className="drop-inbox-icon" />
-                        <span>Drop items here</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bucket-action-footer">
-                    <button
-                      type="button"
-                      className="btn-split-bucket-item"
-                      onClick={() => openSplitModal(bucket.id)}
-                      disabled={bucket.assignedItems.length === 0}
-                    >
-                      Split Item
-                    </button>
-                  </div>
-                </div>
+                <AmbaganBucketCard
+                  key={bucket.id}
+                  bucket={bucket}
+                  nameOf={nameOf}
+                  dragOverTargetId={dragOverTargetId}
+                  draggedItemData={draggedItemData}
+                  activeReassignMenu={activeReassignMenu}
+                  members={members}
+                  itemById={itemById}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDropOnBucket}
+                  onDragStart={handleDragStart}
+                  onEndDrag={endDrag}
+                  onToggleReassignMenu={(bucketId, itemId) => {
+                    const isOpen = activeReassignMenu?.bucketId === bucketId && activeReassignMenu?.itemId === itemId;
+                    setActiveReassignMenu(isOpen ? null : { bucketId, itemId });
+                  }}
+                  onSplitWithAll={(itemId) => {
+                    setActiveReassignMenu(null);
+                    splitWithAll(itemId);
+                  }}
+                  onToggleSplitWith={toggleSplitWith}
+                  onUnassignItem={(bucketId, itemId) => {
+                    setActiveReassignMenu(null);
+                    handleUnassignItem(bucketId, itemId);
+                  }}
+                  onOpenSplitModal={openSplitModal}
+                />
               ))}
             </div>
           </div>
@@ -480,7 +386,7 @@ export const ItemizedAmbaganView = ({
         <div className="item-split-bottom-action">
           <button
             type="button"
-            className="btn btn-primary btn-lg btn-mobile-block"
+            className="btn btn-primary btn-lg btn-mobile-block active-press"
             onClick={handleSave}
             disabled={isSaving}
             id="btn-item-split-continue-action"
@@ -491,90 +397,17 @@ export const ItemizedAmbaganView = ({
         </div>
       </div>
 
-      {/* Split one item between several people */}
-      {splitModal && splitItem && (
-        <div className="modal-backdrop" onClick={() => setSplitModal(null)}>
-          <div className="modal-card split-item-modal-card animate-fade-in" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div className="modal-title-box">
-                <div className="modal-icon-badge" style={{ backgroundColor: '#F3E8FF' }}>
-                  <Users size={20} color="#7C3AED" />
-                </div>
-                <div>
-                  <h3 className="modal-title-heading">Split Item with Squad</h3>
-                  <span className="modal-sub">Divide this item evenly among selected friends</span>
-                </div>
-              </div>
-              <button className="modal-close-btn" onClick={() => setSplitModal(null)} aria-label="Close">
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="modal-body split-modal-body">
-              <div className="form-group">
-                <label className="form-label">Select Item to Split</label>
-                <div className="custom-select-wrapper">
-                  <select
-                    value={splitModal.itemId}
-                    onChange={(e) => setSplitModal({ ...splitModal, itemId: e.target.value })}
-                    className="form-select custom-select-input"
-                  >
-                    {items.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name} — {peso(item.price)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Split Among ({splitModal.memberIds.length} selected)</label>
-                <div className="split-members-picker-row">
-                  {members.map((m) => {
-                    const isSelected = splitModal.memberIds.includes(m.id);
-                    return (
-                      <div
-                        key={m.id}
-                        className={`split-member-pill-btn ${isSelected ? 'selected' : ''}`}
-                        onClick={() => toggleSplitMember(m.id)}
-                      >
-                        <Avatar person={m} className="split-member-avatar-circle" />
-                        <span className="split-member-name">{nameOf[m.id]}</span>
-                        {isSelected && <Check size={14} color="#7C3AED" strokeWidth={3} />}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="split-preview-summary-box">
-                <div className="split-preview-header">
-                  <span className="split-preview-item-name">{splitItem.name}</span>
-                  <span className="split-preview-item-total">Total: {peso(splitItem.price)}</span>
-                </div>
-                <div className="split-preview-calc-row">
-                  <span className="split-calc-math">
-                    {peso(splitItem.price)} ÷ {splitModal.memberIds.length} {splitModal.memberIds.length > 1 ? 'people' : 'person'}
-                  </span>
-                  <span className="split-calc-result">
-                    = <strong>{peso(splitItem.price / splitModal.memberIds.length)}</strong> each
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-actions">
-              <button type="button" className="btn btn-muted" onClick={() => setSplitModal(null)}>
-                Cancel
-              </button>
-              <button type="button" className="btn btn-primary" onClick={confirmSplit}>
-                Confirm Split
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ItemSplitModal
+        splitModal={splitModal}
+        splitItem={splitItem}
+        items={items}
+        members={members}
+        nameOf={nameOf}
+        onClose={() => setSplitModal(null)}
+        onChangeItem={(itemId) => setSplitModal({ ...splitModal, itemId })}
+        onToggleMember={toggleSplitMember}
+        onConfirm={confirmSplit}
+      />
     </div>
   );
 };

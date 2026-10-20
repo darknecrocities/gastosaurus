@@ -1,11 +1,12 @@
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
 import LandingPage from './components/LandingPage';
-import AuthModal from './components/AuthModal';
+import AppModals from './components/AppModals';
 import { supabase } from './lib/supabase';
 import { profileApi, groupsApi, meApi, invitesApi, settlementsApi } from './lib/api';
 import { useAsync } from './hooks/useAsync';
 import { useNotifications } from './hooks/useNotifications';
+import { useJoinCode, readJoinCode } from './hooks/useJoinCode';
 import './App.css';
 
 // Everything behind the login loads on demand, so the landing page stays light.
@@ -19,10 +20,6 @@ const PaymentView = lazy(() => import('./components/PaymentView'));
 const AddExpenseCalculatorView = lazy(() => import('./components/AddExpenseCalculatorView'));
 const ItemizedAmbaganView = lazy(() => import('./components/ItemizedAmbaganView'));
 const NotificationsView = lazy(() => import('./components/NotificationsView'));
-const PersonalBalanceModal = lazy(() => import('./components/PersonalBalanceModal'));
-const GroupDetailModal = lazy(() => import('./components/GroupDetailModal'));
-const CreateGroupModal = lazy(() => import('./components/CreateGroupModal'));
-const ChooseDinoModal = lazy(() => import('./components/ChooseDinoModal'));
 
 // Which navbar tab is highlighted on each screen (inner screens belong to a tab).
 const TAB_FOR_VIEW = {
@@ -39,29 +36,6 @@ const TAB_FOR_VIEW = {
 
 const EXPENSE_FLOW_VIEWS = new Set(['add-expense-calculator', 'item-split']);
 
-const JOIN_KEY = 'gastosaurus-join-code';
-
-/** The ?join=<code> from the URL (moved into sessionStorage), or one saved earlier. */
-function readJoinCode() {
-  try {
-    const fromUrl = new URLSearchParams(window.location.search).get('join');
-    if (fromUrl) {
-      sessionStorage.setItem(JOIN_KEY, fromUrl);
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-    return sessionStorage.getItem(JOIN_KEY);
-  } catch {
-    return null; // storage blocked: the link simply won't auto-join
-  }
-}
-
-function clearJoinCode() {
-  try {
-    sessionStorage.removeItem(JOIN_KEY);
-  } catch {
-    /* ignore */
-  }
-}
 
 function App() {
   // ─── Auth ────────────────────────────────────────────────────────────────
@@ -157,26 +131,16 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Join-by-link: <app>/?join=<code>. The code is kept in sessionStorage
-  // so it survives the sign-up / log-in step.
-  const [joinCode, setJoinCode] = useState(readJoinCode);
-
-  useEffect(() => {
-    if (!joinCode || !authUser) return;
-    invitesApi
-      .join(joinCode)
-      .then((group) => {
-        showToast(`You're in "${group.name}"! 🦖`);
-        setSelectedGroupId(group.id);
-        go('group-members');
-        refresh();
-      })
-      .catch(showError)
-      .finally(() => {
-        clearJoinCode();
-        setJoinCode(null);
-      });
-  }, [joinCode, authUser, go, refresh, showToast, showError]);
+  // Join-by-link: <app>/?join=<code> via useJoinCode hook.
+  useJoinCode(authUser, {
+    onJoined: (group) => {
+      showToast(`You're in "${group.name}"! 🦖`);
+      setSelectedGroupId(group.id);
+      go('group-members');
+      refresh();
+    },
+    onError: showError,
+  });
 
   // ─── Handlers ────────────────────────────────────────────────────────────
   const openAuth = (mode = 'login') => {
@@ -478,71 +442,43 @@ function App() {
         </Suspense>
       </main>
 
-      {toast && (
-        <div className={`app-toast app-toast-${toast.tone}`} role="status" onClick={() => setToast(null)}>
-          {toast.message}
-        </div>
-      )}
-
-      <AuthModal
-        isOpen={isAuthOpen}
-        initialMode={authMode}
-        onClose={() => setIsAuthOpen(false)}
+      <AppModals
+        toast={toast}
+        onDismissToast={() => setToast(null)}
+        isAuthOpen={isAuthOpen}
+        authMode={authMode}
+        onCloseAuth={() => setIsAuthOpen(false)}
         onAuthSuccess={handleAuthSuccess}
+        isCreateGroupOpen={isCreateGroupOpen}
+        currentUserName={authUser?.name}
+        onCloseCreateGroup={() => setIsCreateGroupOpen(false)}
+        onGroupCreated={handleGroupCreated}
+        isPersonalBalanceOpen={isPersonalBalanceOpen}
+        personalBalanceSummary={summaryQuery.data}
+        onClosePersonalBalance={() => setIsPersonalBalanceOpen(false)}
+        onPersonalBalanceChanged={refresh}
+        isGroupDetailOpen={isGroupDetailOpen}
+        selectedGroupId={selectedGroupId}
+        refreshKey={refreshKey}
+        onCloseGroupDetail={() => setIsGroupDetailOpen(false)}
+        onGroupDetailChanged={refresh}
+        onGroupDetailDeleted={() => {
+          setIsGroupDetailOpen(false);
+          setSelectedGroupId(null);
+          refresh();
+          go('groups');
+        }}
+        onAddExpenseToGroup={() => {
+          setIsGroupDetailOpen(false);
+          startExpense(selectedGroupId);
+        }}
+        isChooseDinoOpen={isChooseDinoOpen}
+        authUser={authUser}
+        isDinoOnboarding={isDinoOnboarding}
+        onCloseChooseDino={() => setIsChooseDinoOpen(false)}
+        onDinoSaved={handleDinoSaved}
+        showToast={showToast}
       />
-
-      <Suspense fallback={null}>
-        {isCreateGroupOpen && (
-          <CreateGroupModal
-            isOpen={isCreateGroupOpen}
-            currentUserName={authUser?.name}
-            onClose={() => setIsCreateGroupOpen(false)}
-            onGroupCreated={handleGroupCreated}
-          />
-        )}
-
-        {isPersonalBalanceOpen && (
-          <PersonalBalanceModal
-            isOpen={isPersonalBalanceOpen}
-            summary={summaryQuery.data}
-            onClose={() => setIsPersonalBalanceOpen(false)}
-            onChanged={refresh}
-            showToast={showToast}
-          />
-        )}
-
-        {isGroupDetailOpen && selectedGroupId && (
-          <GroupDetailModal
-            groupId={selectedGroupId}
-            refreshKey={refreshKey}
-            isOpen={isGroupDetailOpen && !!selectedGroupId}
-            onClose={() => setIsGroupDetailOpen(false)}
-            onChanged={refresh}
-            onDeleted={() => {
-              setIsGroupDetailOpen(false);
-              setSelectedGroupId(null);
-              refresh();
-              go('groups');
-            }}
-            showToast={showToast}
-            onAddExpenseToGroup={() => {
-              setIsGroupDetailOpen(false);
-              startExpense(selectedGroupId);
-            }}
-          />
-        )}
-
-        {isChooseDinoOpen && (
-          <ChooseDinoModal
-            isOpen={isChooseDinoOpen}
-            user={authUser}
-            isInitialOnboarding={isDinoOnboarding}
-            onClose={() => setIsChooseDinoOpen(false)}
-            onDinoSaved={handleDinoSaved}
-            showToast={showToast}
-          />
-        )}
-      </Suspense>
     </div>
   );
 }
