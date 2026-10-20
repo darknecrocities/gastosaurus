@@ -125,10 +125,19 @@ export const LandingPage = ({
       {/* Ambient Floating Dinos with Parallax Depth */}
       <FloatingDinosBackground />
 
+      {/* Mobile Backdrop Scrim Overlay (rendered outside header to avoid stacking context & blur traps) */}
+      {isMobileMenuOpen && (
+        <div
+          className="landing-mobile-backdrop"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Floating Big Glassmorphism Top Header */}
-      <header className="landing-header liquid-glass-subtle">
+      <header className={`landing-header liquid-glass-subtle ${isMobileMenuOpen ? 'menu-open' : ''}`}>
         <div className="navbar-brand landing-brand">
-          <span className="mascot-avatar-wrapper liquid-glass-subtle">
+          <span className="mascot-avatar-wrapper">
             <img src={mascotImg} alt="" className="mascot-avatar-img" />
           </span>
           <span className="brand-name">Gastosaurus</span>
@@ -193,7 +202,7 @@ export const LandingPage = ({
         <div className="landing-header-mobile-triggers">
           <button
             type="button"
-            className="mobile-sound-btn liquid-glass-card active-press"
+            className="mobile-sound-btn active-press"
             onClick={handleToggleSound}
             aria-label={isAudioActive ? 'Mute sound' : 'Enable sound'}
             title={isAudioActive ? 'Sound ON' : 'Sound OFF'}
@@ -203,7 +212,7 @@ export const LandingPage = ({
 
           <button
             type="button"
-            className={`mobile-burger-btn liquid-glass-card active-press ${isMobileMenuOpen ? 'is-active' : ''}`}
+            className={`mobile-burger-btn active-press ${isMobileMenuOpen ? 'is-active' : ''}`}
             onClick={() => {
               sounds.playPop();
               setIsMobileMenuOpen((prev) => !prev);
@@ -217,68 +226,61 @@ export const LandingPage = ({
 
         {/* Mobile Slide-Down Liquid Glass Navigation Drawer */}
         {isMobileMenuOpen && (
-          <>
-            <div
-              className="landing-mobile-backdrop"
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-hidden="true"
-            />
-            <div className="landing-mobile-drawer liquid-glass-card animate-slide-down" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
-              <div className="mobile-drawer-header">
-                <span className="mobile-drawer-title">Navigation</span>
-                <span className="mobile-drawer-badge">
-                  <Sparkles size={11} color="#E2486E" /> Menu
-                </span>
-              </div>
+          <div className="landing-mobile-drawer liquid-glass-card animate-slide-down" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+            <div className="mobile-drawer-header">
+              <span className="mobile-drawer-title">Navigation</span>
+              <span className="mobile-drawer-badge">
+                <Sparkles size={11} color="#E2486E" /> Menu
+              </span>
+            </div>
 
-              <nav className="mobile-drawer-nav" aria-label="Mobile section navigation">
-                {NAV_SECTIONS.map((sec) => (
-                  <button
-                    key={sec.id}
-                    type="button"
-                    className={`mobile-nav-link active-press ${activeSection === sec.id ? 'active' : ''}`}
-                    onClick={() => {
-                      scrollToSection(sec.id);
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    <span className="mobile-nav-label">{sec.label}</span>
-                    <ChevronRight size={16} className="mobile-nav-arrow" />
-                  </button>
-                ))}
-              </nav>
-
-              <div className="mobile-drawer-actions">
-                {onOpenDownload && (
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-block mobile-drawer-install-btn active-press"
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      handleDownloadClick();
-                    }}
-                  >
-                    <Download size={16} />
-                    <span>Install Gastosaurus PWA</span>
-                  </button>
-                )}
-
+            <nav className="mobile-drawer-nav" aria-label="Mobile section navigation">
+              {NAV_SECTIONS.map((sec) => (
                 <button
+                  key={sec.id}
                   type="button"
-                  className="btn btn-outline btn-block active-press"
+                  className={`mobile-nav-link active-press ${activeSection === sec.id ? 'active' : ''}`}
                   onClick={() => {
-                    sounds.playClick();
+                    scrollToSection(sec.id);
                     setIsMobileMenuOpen(false);
-                    if (isLoggedIn) onOpenDashboard?.();
-                    else onOpenAuth?.('login');
                   }}
                 >
-                  <span>{isLoggedIn ? 'Go to Dashboard' : 'Log In / Sign Up'}</span>
-                  <ArrowRight size={16} />
+                  <span className="mobile-nav-label">{sec.label}</span>
+                  <ChevronRight size={16} className="mobile-nav-arrow" />
                 </button>
-              </div>
+              ))}
+            </nav>
+
+            <div className="mobile-drawer-actions">
+              {onOpenDownload && (
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block mobile-drawer-install-btn active-press"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleDownloadClick();
+                  }}
+                >
+                  <Download size={16} />
+                  <span>Install Gastosaurus PWA</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                className="btn btn-outline btn-block active-press"
+                onClick={() => {
+                  sounds.playClick();
+                  setIsMobileMenuOpen(false);
+                  if (isLoggedIn) onOpenDashboard?.();
+                  else onOpenAuth?.('login');
+                }}
+              >
+                <span>{isLoggedIn ? 'Go to Dashboard' : 'Log In / Sign Up'}</span>
+                <ArrowRight size={16} />
+              </button>
             </div>
-          </>
+          </div>
         )}
       </header>
 
