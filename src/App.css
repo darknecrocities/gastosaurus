@@ -745,8 +745,8 @@ textarea.form-input,
 }
 
 .mascot-avatar-wrapper {
-  width: 42px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -754,24 +754,25 @@ textarea.form-input,
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 14px rgba(226, 72, 110, 0.16);
   transition: transform var(--transition-fast);
 }
 
 .navbar-brand:hover .mascot-avatar-wrapper {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .mascot-avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 2px;
 }
 
 .brand-name {
-  font-size: var(--text-2xl);
-  font-weight: var(--weight-extrabold);
-  letter-spacing: -0.02em;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
   white-space: nowrap;
 }
@@ -7969,19 +7970,20 @@ textarea.form-input,
 }
 
 .editorial-hero-title {
-  font-size: clamp(36px, 5.2vw, 72px);
+  font-size: clamp(24px, 3.8vw, 54px);
   font-weight: 900;
-  line-height: 1.20;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   color: #1E2026;
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .editorial-hero-line {
   display: block;
+  white-space: nowrap;
   line-height: inherit;
 }
 
@@ -7997,20 +7999,22 @@ textarea.form-input,
 
 .hero-split-line {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap !important;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 .rotating-word-badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 16px;
+  padding: 2px 14px;
   border-radius: 9999px;
   margin: 0 4px;
   border: 1px solid rgba(226, 72, 110, 0.35);
   box-shadow: 0 4px 20px rgba(226, 72, 110, 0.15);
   transform-origin: center;
+  white-space: nowrap;
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, filter 0.3s ease;
 }
 
@@ -8027,9 +8031,10 @@ textarea.form-input,
 }
 
 .rotating-word-text {
-  font-size: clamp(24px, 4vw, 48px);
+  font-size: clamp(20px, 3.2vw, 44px);
   font-weight: 900;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -8201,24 +8206,29 @@ textarea.form-input,
 .tilted-showcase-section {
   position: relative;
   z-index: 1;
-  max-width: 1280px;
-  margin: 90px auto;
-  padding: 80px 48px;
-  border-radius: 40px;
+  width: 100%;
+  max-width: 100% !important;
+  margin: 60px 0 !important;
+  padding: 100px clamp(20px, 5vw, 64px) !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-top: 1px solid rgba(226, 72, 110, 0.12) !important;
+  border-bottom: 1px solid rgba(226, 72, 110, 0.12) !important;
+  box-shadow: none !important;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  min-height: 680px;
-  background: linear-gradient(135deg, rgba(255, 244, 244, 0.72) 0%, rgba(247, 210, 220, 0.45) 100%);
-  border: 1.5px solid rgba(226, 72, 110, 0.18);
-  box-shadow: 0 24px 60px rgba(226, 72, 110, 0.08);
+  min-height: 720px;
+  background: linear-gradient(180deg, rgba(255, 244, 244, 0.65) 0%, rgba(247, 210, 220, 0.35) 50%, rgba(255, 244, 244, 0.65) 100%);
 }
 
 .tilted-showcase-inner {
   position: relative;
   z-index: 3;
   width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -8228,14 +8238,14 @@ textarea.form-input,
 .tilted-showcase-intro {
   pointer-events: auto;
   text-align: left;
-  max-width: 540px;
-  padding: 40px 44px;
-  border-radius: 32px;
+  max-width: 520px;
+  padding: 36px 40px;
+  border-radius: 28px;
   background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1.5px solid rgba(226, 72, 110, 0.22);
-  box-shadow: 0 20px 50px rgba(226, 72, 110, 0.14), 0 2px 10px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 40px rgba(226, 72, 110, 0.08);
 }
 
 .tilted-showcase-title {

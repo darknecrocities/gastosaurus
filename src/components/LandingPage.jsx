@@ -152,40 +152,28 @@ export const LandingPage = ({
       {/* Dual-Direction Kinetic Typography Marquee Ribbon */}
       <KineticMarquee />
 
-      {/* 02 // Non-Stop Looping 4-Row Smartphone Frame Carousel */}
+      {/* Non-Stop Looping 4-Row Smartphone Frame Carousel */}
       <ScrollReveal animation="fade-up">
-        <div className="section-editorial-marker">
-          <span className="marker-index">02 // HARDWARE PREVIEW</span>
-        </div>
         <PhoneAppCarousel />
       </ScrollReveal>
 
-      {/* 03 // Real-time Interactive Quick Split Calculator Widget */}
+      {/* Real-time Interactive Quick Split Calculator Widget */}
       <ScrollReveal animation="fade-up">
         <section className="landing-calculator-section">
-          <div className="section-editorial-marker">
-            <span className="marker-index">03 // CENTAVO ENGINE</span>
-          </div>
           <div className="calc-section-inner">
             <QuickSplitCalculator onStartSaving={onStartSaving} />
           </div>
         </section>
       </ScrollReveal>
 
-      {/* 04 // Interactive Cursor-Tracked Dinosaur Herd Gallery */}
+      {/* Interactive Dinosaur Herd Gallery */}
       <ScrollReveal animation="fade-up">
-        <div className="section-editorial-marker">
-          <span className="marker-index">04 // THE HERD ARCHETYPES</span>
-        </div>
         <DinoGalleryShowcase />
       </ScrollReveal>
 
-      {/* 05 // Middle Glass Strip: Smart Categorization & Bill Reminders */}
+      {/* Middle Glass Strip: Smart Categorization & Bill Reminders */}
       <ScrollReveal animation="fade-up">
         <section className="landing-features-strip">
-          <div className="section-editorial-marker">
-            <span className="marker-index">05 // FINANCIAL CLARITY</span>
-          </div>
           <div className="features-strip-inner liquid-glass-card">
             <div className="feature-strip-item">
               <div className="feature-strip-icon-wrapper liquid-glass-subtle">
@@ -214,12 +202,9 @@ export const LandingPage = ({
         </section>
       </ScrollReveal>
 
-      {/* 06 // Debt Chain Minimizer Story Demo */}
+      {/* Debt Chain Minimizer Story Demo */}
       <ScrollReveal animation="fade-up">
         <section className="landing-visualizer-section">
-          <div className="section-editorial-marker">
-            <span className="marker-index">06 // THE SETTLEMENT MATRIX</span>
-          </div>
           <div className="visualizer-section-inner">
             <SettleUpVisualizer />
           </div>

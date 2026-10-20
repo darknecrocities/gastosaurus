@@ -10,7 +10,6 @@ import dinoEgg from '../assets/dinos/dino-green-egg.png';
 import { sounds } from '../lib/sounds';
 import { 
   Sparkles, 
-  Compass, 
   Play, 
   Pause, 
   ReceiptText, 
@@ -172,10 +171,6 @@ export const DinoGalleryShowcase = () => {
   return (
     <section className="herd-catalog-section">
       <div className="herd-catalog-header">
-        <div className="section-pill liquid-glass-subtle">
-          <Compass size={15} color="#E2486E" />
-          <span>Devlets Architecture Catalog</span>
-        </div>
         <h2 className="section-title">
           Meet the Herd: <span className="hero-title-accent text-gradient-shimmer">Pick Your Persona</span>
         </h2>

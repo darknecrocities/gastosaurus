@@ -30,11 +30,6 @@ export const RotatingHeadline = () => {
 
   return (
     <div className="rotating-headline-wrapper">
-      <div className="editorial-meta-index">
-        <span className="editorial-slash-badge">01 // THE AMBAGAN MANIFESTO</span>
-        <span className="editorial-status-dot" />
-      </div>
-
       <h1 className="editorial-hero-title">
         <span className="editorial-hero-line">STOP THE AWKWARD</span>
         <span className="editorial-hero-line text-stroke-hollow">CHAT MATH.</span>

@@ -9,7 +9,6 @@ import {
   TrendingUp,
   CheckCircle2,
   Users,
-  Smartphone,
   Calculator,
   Wallet,
   Sparkles
@@ -278,14 +277,9 @@ export const PhoneAppCarousel = () => {
         </div>
       </div>
 
-      {/* Foreground Content Card */}
+      {/* Foreground Content */}
       <div className="tilted-showcase-inner">
-        <div className="tilted-showcase-intro liquid-glass-card">
-          <div className="section-pill liquid-glass-subtle">
-            <Smartphone size={15} color="#E2486E" />
-            <span>Interactive Mobile Showcase</span>
-          </div>
-
+        <div className="tilted-showcase-intro">
           <h2 className="tilted-showcase-title">
             MOBILE APP <br />
             <span className="text-stroke-hollow">DESIGN</span> <br />

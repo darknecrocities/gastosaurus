@@ -37,7 +37,6 @@ export const SettleUpVisualizer = () => {
     <div className="settle-visualizer-widget liquid-glass-card">
       <div className="visualizer-header">
         <div className="visualizer-title-wrap">
-          <span className="visualizer-badge">Debt-Chain Minimizer</span>
           <h3 className="visualizer-title">{scenario.title}</h3>
         </div>
         <button
